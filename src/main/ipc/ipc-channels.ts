@@ -1,0 +1,17 @@
+export const IPC_CHANNELS = {
+  getAppInfo: 'app:get-info',
+  getDatabaseStatus: 'database:get-status',
+  getDashboardSummary: 'dashboard:get-summary',
+  listUsers: 'users:list',
+  listClients: 'clients:list',
+  listProjects: 'projects:list',
+  listDesignsByProject: 'designs:list-by-project',
+  listMaterials: 'materials:list',
+  listRendersByProject: 'renders:list-by-project',
+  listCuttingListsByProject: 'cutting-lists:list-by-project',
+  listQuotesByProject: 'quotes:list-by-project',
+  listActivitiesByProject: 'schedule:list-activities-by-project',
+  listAlertsByProject: 'alerts:list-by-project',
+  listDocumentsByProject: 'documents:list-by-project',
+  listHistoryByProject: 'history:list-by-project',
+} as const;
