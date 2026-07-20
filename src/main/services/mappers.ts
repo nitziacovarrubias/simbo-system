@@ -1,17 +1,15 @@
 import type {
   Activity,
   Alert,
-  Client,
   CuttingList,
   Design,
   Document,
   HistoryEntry,
   Material,
   Person,
-  Project,
   Quote,
   Render,
-  User,
+  User
 } from '@prisma/client';
 import {
   ActivityStatus,
@@ -25,11 +23,12 @@ import {
   ProjectStatus,
   QuoteStatus,
   RenderStatus,
-  UserRole,
+  UserRole
 } from '../../shared/constants/domain.enums';
 import type {
   ActivityListItem,
   AlertListItem,
+  ClientDetail,
   ClientListItem,
   CuttingListItem,
   DesignListItem,
@@ -37,11 +36,15 @@ import type {
   HistoryEntryListItem,
   MaterialListItem,
   PersonSummary,
+  ProjectDetail,
   ProjectListItem,
   QuoteListItem,
   RenderListItem,
-  UserListItem,
+  UserListItem
 } from '../../shared/types';
+import type { ClientDetailRecord, ClientListRecord } from '../repositories/client.repository';
+import type { ProjectDetailRecord, ProjectListRecord } from '../repositories/project.repository';
+import { parseRoomSpaceJson } from './room-space.service';
 
 export function toIso(value: Date | null | undefined): string | null {
   return value ? value.toISOString() : null;
@@ -54,8 +57,15 @@ export function toPersonSummary(person: Person): PersonSummary {
     lastName: person.lastName,
     fullName: `${person.firstName} ${person.lastName}`.trim(),
     phone: person.phone,
-    email: person.email,
+    email: person.email
   };
+}
+
+function getAssignedPersonName(
+  activities: Array<{ assignedTo: (User & { person: Person | null }) | null }>
+): string | null {
+  const person = activities.find((activity) => activity.assignedTo?.person)?.assignedTo?.person;
+  return person ? `${person.firstName} ${person.lastName}`.trim() : null;
 }
 
 export function toUserListItem(user: User & { person: Person | null }): UserListItem {
@@ -65,11 +75,11 @@ export function toUserListItem(user: User & { person: Person | null }): UserList
     email: user.email,
     role: user.role as UserRole,
     isActive: user.isActive,
-    person: user.person ? toPersonSummary(user.person) : null,
+    person: user.person ? toPersonSummary(user.person) : null
   };
 }
 
-export function toClientListItem(client: Client & { person: Person; _count: { projects: number } }): ClientListItem {
+export function toClientListItem(client: ClientListRecord): ClientListItem {
   return {
     id: client.id,
     person: toPersonSummary(client.person),
@@ -77,22 +87,76 @@ export function toClientListItem(client: Client & { person: Person; _count: { pr
     status: client.status as ClientStatus,
     notes: client.notes,
     projectCount: client._count.projects,
-    updatedAt: client.updatedAt.toISOString(),
+    updatedAt: client.updatedAt.toISOString()
   };
 }
 
-export function toProjectListItem(
-  project: Project & { client: Client & { person: Person } },
-): ProjectListItem {
+export function toClientDetail(client: ClientDetailRecord): ClientDetail {
+  return {
+    id: client.id,
+    firstName: client.person.firstName,
+    lastName: client.person.lastName,
+    fullName: `${client.person.firstName} ${client.person.lastName}`.trim(),
+    phone: client.person.phone,
+    email: client.person.email,
+    address: client.person.address,
+    rfc: client.person.rfc,
+    projectAddress: client.projectAddress,
+    initialContactDate: toIso(client.initialContactDate),
+    status: client.status as ClientStatus,
+    notes: client.notes,
+    createdAt: client.createdAt.toISOString(),
+    updatedAt: client.updatedAt.toISOString(),
+    projects: client.projects.map((project) => ({
+      id: project.id,
+      name: project.name,
+      status: project.status as ProjectStatus,
+      location: project.location,
+      startDate: project.startDate.toISOString(),
+      deliveryDate: toIso(project.deliveryDate)
+    }))
+  };
+}
+
+export function toProjectListItem(project: ProjectListRecord): ProjectListItem {
+  return {
+    id: project.id,
+    clientId: project.clientId,
+    name: project.name,
+    description: project.description,
+    location: project.location,
+    status: project.status as ProjectStatus,
+    clientName: `${project.client.person.firstName} ${project.client.person.lastName}`.trim(),
+    startDate: project.startDate.toISOString(),
+    deliveryDate: toIso(project.deliveryDate),
+    mainResponsibleName: getAssignedPersonName(project.activities),
+    hasRoomSpace: Boolean(parseRoomSpaceJson(project.roomSpaceJson)),
+    updatedAt: project.updatedAt.toISOString()
+  };
+}
+
+export function toProjectDetail(project: ProjectDetailRecord): ProjectDetail {
   return {
     id: project.id,
     name: project.name,
     description: project.description,
     location: project.location,
     status: project.status as ProjectStatus,
-    clientName: `${project.client.person.firstName} ${project.client.person.lastName}`.trim(),
+    startDate: project.startDate.toISOString(),
     deliveryDate: toIso(project.deliveryDate),
+    roomSpace: parseRoomSpaceJson(project.roomSpaceJson),
+    client: {
+      id: project.client.id,
+      fullName: `${project.client.person.firstName} ${project.client.person.lastName}`.trim(),
+      phone: project.client.person.phone,
+      email: project.client.person.email,
+      projectAddress: project.client.projectAddress,
+      status: project.client.status as ClientStatus
+    },
+    mainResponsibleName: getAssignedPersonName(project.activities),
+    createdAt: project.createdAt.toISOString(),
     updatedAt: project.updatedAt.toISOString(),
+    history: project.historyEntries.map(toHistoryEntryListItem)
   };
 }
 
@@ -104,7 +168,7 @@ export function toDesignListItem(design: Design): DesignListItem {
     version: design.version,
     status: design.status as DesignStatus,
     isCurrent: design.isCurrent,
-    updatedAt: design.updatedAt.toISOString(),
+    updatedAt: design.updatedAt.toISOString()
   };
 }
 
@@ -118,7 +182,7 @@ export function toMaterialListItem(material: Material): MaterialListItem {
     cost: material.cost,
     thicknessMm: material.thicknessMm,
     colorHex: material.colorHex,
-    isActive: material.isActive,
+    isActive: material.isActive
   };
 }
 
@@ -132,18 +196,20 @@ export function toRenderListItem(render: Render): RenderListItem {
     format: render.format,
     resolutionWidth: render.resolutionWidth,
     resolutionHeight: render.resolutionHeight,
-    updatedAt: render.updatedAt.toISOString(),
+    updatedAt: render.updatedAt.toISOString()
   };
 }
 
-export function toCuttingListItem(list: CuttingList & { _count?: { pieces: number } }): CuttingListItem {
+export function toCuttingListItem(
+  list: CuttingList & { _count?: { pieces: number } }
+): CuttingListItem {
   return {
     id: list.id,
     projectId: list.projectId,
     version: list.version,
     status: list.status as CuttingListStatus,
     piecesCount: list._count?.pieces ?? 0,
-    updatedAt: list.updatedAt.toISOString(),
+    updatedAt: list.updatedAt.toISOString()
   };
 }
 
@@ -158,12 +224,12 @@ export function toQuoteListItem(quote: Quote): QuoteListItem {
     laborCost: quote.laborCost,
     advancePayment: quote.advancePayment,
     total: quote.total,
-    updatedAt: quote.updatedAt.toISOString(),
+    updatedAt: quote.updatedAt.toISOString()
   };
 }
 
 export function toActivityListItem(
-  activity: Activity & { assignedTo?: (User & { person: Person | null }) | null },
+  activity: Activity & { assignedTo?: (User & { person: Person | null }) | null }
 ): ActivityListItem {
   const assignedToPerson = activity.assignedTo?.person;
   return {
@@ -173,9 +239,11 @@ export function toActivityListItem(
     stage: activity.stage,
     status: activity.status as ActivityStatus,
     priority: activity.priority as AlertPriority,
-    assignedToName: assignedToPerson ? `${assignedToPerson.firstName} ${assignedToPerson.lastName}`.trim() : null,
+    assignedToName: assignedToPerson
+      ? `${assignedToPerson.firstName} ${assignedToPerson.lastName}`.trim()
+      : null,
     startDate: toIso(activity.startDate),
-    dueDate: toIso(activity.dueDate),
+    dueDate: toIso(activity.dueDate)
   };
 }
 
@@ -188,7 +256,7 @@ export function toAlertListItem(alert: Alert): AlertListItem {
     priority: alert.priority as AlertPriority,
     isRead: alert.isRead,
     resolvedAt: toIso(alert.resolvedAt),
-    createdAt: alert.createdAt.toISOString(),
+    createdAt: alert.createdAt.toISOString()
   };
 }
 
@@ -201,7 +269,7 @@ export function toDocumentListItem(document: Document): DocumentListItem {
     filePath: document.filePath,
     documentType: document.documentType as DocumentType,
     stage: document.stage,
-    createdAt: document.createdAt.toISOString(),
+    createdAt: document.createdAt.toISOString()
   };
 }
 
@@ -213,6 +281,6 @@ export function toHistoryEntryListItem(entry: HistoryEntry): HistoryEntryListIte
     entityType: entry.entityType,
     title: entry.title,
     description: entry.description,
-    createdAt: entry.createdAt.toISOString(),
+    createdAt: entry.createdAt.toISOString()
   };
 }

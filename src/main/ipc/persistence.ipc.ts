@@ -15,19 +15,29 @@ import { ScheduleService } from '../services/schedule.service';
 import { AlertService } from '../services/alert.service';
 import { DocumentService } from '../services/document.service';
 import { HistoryService } from '../services/history.service';
-import { projectIdInputSchema } from '../../shared/schemas';
+import {
+  clientSchema,
+  projectIdInputSchema,
+  projectSchema,
+  roomSpaceSchema
+} from '../../shared/schemas';
 
 const idOnlySchema = z.string().min(1);
 
 function registerSafeHandler<TArgs extends unknown[], TResult>(
   channel: string,
-  handler: (...args: TArgs) => Promise<TResult> | TResult,
+  handler: (...args: TArgs) => Promise<TResult> | TResult
 ): void {
   ipcMain.handle(channel, async (_event, ...args: TArgs) => {
     try {
       return await handler(...args);
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Error desconocido';
+      const message =
+        error instanceof z.ZodError
+          ? error.issues.map((issue) => issue.message).join(' ')
+          : error instanceof Error
+            ? error.message
+            : 'Error desconocido';
       console.error(`IPC handler failed: ${channel}`, error);
       throw new Error(`No se pudo completar la operación: ${message}`);
     }
@@ -53,14 +63,36 @@ export function registerPersistenceIpcHandlers(): void {
   registerSafeHandler(IPC_CHANNELS.getAppInfo, () => ({
     name: app.getName(),
     version: app.getVersion(),
-    environment: process.env.NODE_ENV ?? 'development',
+    environment: process.env.NODE_ENV ?? 'development'
   }));
 
   registerSafeHandler(IPC_CHANNELS.getDatabaseStatus, () => databaseService.getStatus());
   registerSafeHandler(IPC_CHANNELS.getDashboardSummary, () => dashboardService.getSummary());
   registerSafeHandler(IPC_CHANNELS.listUsers, () => userService.listUsers());
   registerSafeHandler(IPC_CHANNELS.listClients, () => clientService.listClients());
+  registerSafeHandler(IPC_CHANNELS.getClientById, (clientId: string) =>
+    clientService.getClientById(idOnlySchema.parse(clientId))
+  );
+  registerSafeHandler(IPC_CHANNELS.createClient, (input: unknown) =>
+    clientService.createClient(clientSchema.parse(input))
+  );
+  registerSafeHandler(IPC_CHANNELS.updateClient, (clientId: string, input: unknown) =>
+    clientService.updateClient(idOnlySchema.parse(clientId), clientSchema.parse(input))
+  );
+
   registerSafeHandler(IPC_CHANNELS.listProjects, () => projectService.listProjects());
+  registerSafeHandler(IPC_CHANNELS.getProjectById, (projectId: string) =>
+    projectService.getProjectById(idOnlySchema.parse(projectId))
+  );
+  registerSafeHandler(IPC_CHANNELS.createProject, (input: unknown) =>
+    projectService.createProject(projectSchema.parse(input))
+  );
+  registerSafeHandler(IPC_CHANNELS.updateProject, (projectId: string, input: unknown) =>
+    projectService.updateProject(idOnlySchema.parse(projectId), projectSchema.parse(input))
+  );
+  registerSafeHandler(IPC_CHANNELS.saveProjectRoomSpace, (projectId: string, input: unknown) =>
+    projectService.saveProjectRoomSpace(idOnlySchema.parse(projectId), roomSpaceSchema.parse(input))
+  );
   registerSafeHandler(IPC_CHANNELS.listMaterials, () => materialService.listMaterials());
 
   registerSafeHandler(IPC_CHANNELS.listDesignsByProject, (projectId: string) => {

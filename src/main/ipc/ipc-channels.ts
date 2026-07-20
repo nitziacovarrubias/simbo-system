@@ -4,7 +4,14 @@ export const IPC_CHANNELS = {
   getDashboardSummary: 'dashboard:get-summary',
   listUsers: 'users:list',
   listClients: 'clients:list',
+  getClientById: 'clients:get-by-id',
+  createClient: 'clients:create',
+  updateClient: 'clients:update',
   listProjects: 'projects:list',
+  getProjectById: 'projects:get-by-id',
+  createProject: 'projects:create',
+  updateProject: 'projects:update',
+  saveProjectRoomSpace: 'projects:save-room-space',
   listDesignsByProject: 'designs:list-by-project',
   listMaterials: 'materials:list',
   listRendersByProject: 'renders:list-by-project',
@@ -13,5 +20,5 @@ export const IPC_CHANNELS = {
   listActivitiesByProject: 'schedule:list-activities-by-project',
   listAlertsByProject: 'alerts:list-by-project',
   listDocumentsByProject: 'documents:list-by-project',
-  listHistoryByProject: 'history:list-by-project',
+  listHistoryByProject: 'history:list-by-project'
 } as const;

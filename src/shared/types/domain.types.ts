@@ -10,7 +10,7 @@ import type {
   ProjectStatus,
   QuoteStatus,
   RenderStatus,
-  UserRole,
+  UserRole
 } from '../constants/domain.enums';
 
 export interface AppInfo {
@@ -66,31 +66,17 @@ export interface ClientListItem {
 
 export interface ProjectListItem {
   id: string;
+  clientId: string;
   name: string;
   description: string | null;
   location: string | null;
   status: ProjectStatus;
   clientName: string;
+  startDate: string;
   deliveryDate: string | null;
+  mainResponsibleName: string | null;
+  hasRoomSpace: boolean;
   updatedAt: string;
-}
-
-export interface RoomOpening {
-  name: string;
-  widthMm: number;
-  positionMm: number;
-  heightMm?: number;
-}
-
-export interface RoomSpace {
-  shape: 'RECTANGULAR' | 'L_SHAPE' | 'U_SHAPE' | 'CUSTOM';
-  widthMm: number;
-  depthMm: number;
-  heightMm: number;
-  wallThicknessMm?: number;
-  doors?: RoomOpening[];
-  windows?: RoomOpening[];
-  notes?: string;
 }
 
 export interface DesignListItem {

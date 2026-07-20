@@ -5,12 +5,12 @@ import { UserRole } from '../../../../src/shared/constants/domain.enums';
 describe('domain schemas', () => {
   it('validates a valid room space', () => {
     const result = roomSpaceSchema.safeParse({
-      shape: 'RECTANGULAR',
+      layoutType: 'RECTANGULAR',
       widthMm: 3400,
       depthMm: 2800,
       heightMm: 2400,
-      doors: [],
-      windows: [],
+      wallThicknessMm: 120,
+      openings: []
     });
 
     expect(result.success).toBe(true);

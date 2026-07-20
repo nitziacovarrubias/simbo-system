@@ -1,18 +1,19 @@
 import { z } from 'zod';
+import { clientSchema } from './client.schema';
+import { projectSchema } from './project.schema';
+import { roomOpeningSchema, roomSpaceSchema } from './room-space.schema';
 import {
   ActivityStatus,
   AlertPriority,
-  ClientStatus,
   CommentTargetType,
   CuttingListStatus,
   DesignStatus,
   DocumentType,
   HistoryAction,
   MaterialUnit,
-  ProjectStatus,
   QuoteStatus,
   RenderStatus,
-  UserRole,
+  UserRole
 } from '../constants/domain.enums';
 
 const idSchema = z.string().min(1, 'El identificador es obligatorio.');
@@ -29,7 +30,7 @@ export const personSchema = z.object({
   phone: z.string().min(7).optional().nullable(),
   address: z.string().optional().nullable(),
   email: z.string().email('El correo no es válido.').optional().nullable(),
-  rfc: z.string().min(12).max(13).optional().nullable(),
+  rfc: z.string().min(12).max(13).optional().nullable()
 });
 
 export const userSchema = z.object({
@@ -39,53 +40,10 @@ export const userSchema = z.object({
   email: z.string().email('El correo no es válido.'),
   passwordHash: z.string().min(8, 'La contraseña debe estar protegida.'),
   role: z.nativeEnum(UserRole),
-  isActive: z.boolean().default(true),
+  isActive: z.boolean().default(true)
 });
 
-export const clientSchema = z.object({
-  id: idSchema.optional(),
-  personId: idSchema.optional(),
-  person: personSchema.optional(),
-  projectAddress: z.string().optional().nullable(),
-  initialContactDate: isoDateSchema,
-  status: z.nativeEnum(ClientStatus).default(ClientStatus.ACTIVE),
-  notes: z.string().optional().nullable(),
-  consentAcceptedAt: isoDateSchema,
-});
-
-export const roomOpeningSchema = z.object({
-  name: z.string().min(1),
-  widthMm: positiveMeasureSchema,
-  positionMm: z.number().min(0),
-  heightMm: positiveMeasureSchema.optional(),
-});
-
-export const roomSpaceSchema = z.object({
-  shape: z.enum(['RECTANGULAR', 'L_SHAPE', 'U_SHAPE', 'CUSTOM']),
-  widthMm: positiveMeasureSchema,
-  depthMm: positiveMeasureSchema,
-  heightMm: positiveMeasureSchema,
-  wallThicknessMm: positiveMeasureSchema.optional(),
-  doors: z.array(roomOpeningSchema).default([]),
-  windows: z.array(roomOpeningSchema).default([]),
-  notes: z.string().optional(),
-});
-
-export const projectSchema = z.object({
-  id: idSchema.optional(),
-  clientId: idSchema,
-  createdById: optionalIdSchema,
-  name: z.string().min(3, 'El nombre del proyecto es obligatorio.'),
-  description: z.string().optional().nullable(),
-  location: z.string().optional().nullable(),
-  status: z.nativeEnum(ProjectStatus).default(ProjectStatus.DRAFT),
-  startDate: isoDateSchema,
-  deliveryDate: isoDateSchema,
-  closedAt: isoDateSchema,
-  archivedAt: isoDateSchema,
-  roomSpace: roomSpaceSchema.optional(),
-  roomSpaceJson: jsonStringSchema,
-});
+export { clientSchema, projectSchema, roomOpeningSchema, roomSpaceSchema };
 
 export const designSchema = z.object({
   id: idSchema.optional(),
@@ -99,7 +57,7 @@ export const designSchema = z.object({
   roomSpaceJson: jsonStringSchema,
   designJson: z.string().min(2).default('{}'),
   notes: z.string().optional().nullable(),
-  approvedAt: isoDateSchema,
+  approvedAt: isoDateSchema
 });
 
 export const designModuleSchema = z.object({
@@ -119,7 +77,7 @@ export const designModuleSchema = z.object({
   heightMm: positiveMeasureSchema,
   depthMm: positiveMeasureSchema,
   quantity: z.number().int().positive().default(1),
-  notes: z.string().optional().nullable(),
+  notes: z.string().optional().nullable()
 });
 
 export const moduleTemplateSchema = z.object({
@@ -131,7 +89,7 @@ export const moduleTemplateSchema = z.object({
   defaultHeightMm: positiveMeasureSchema,
   defaultDepthMm: positiveMeasureSchema,
   parameterJson: z.string().default('{}'),
-  isActive: z.boolean().default(true),
+  isActive: z.boolean().default(true)
 });
 
 export const materialSchema = z.object({
@@ -142,10 +100,14 @@ export const materialSchema = z.object({
   unit: z.nativeEnum(MaterialUnit).default(MaterialUnit.SHEET),
   cost: moneySchema,
   thicknessMm: positiveMeasureSchema.optional().nullable(),
-  colorHex: z.string().regex(/^#[0-9A-Fa-f]{6}$/).optional().nullable(),
+  colorHex: z
+    .string()
+    .regex(/^#[0-9A-Fa-f]{6}$/)
+    .optional()
+    .nullable(),
   texturePath: z.string().optional().nullable(),
   supplier: z.string().optional().nullable(),
-  isActive: z.boolean().default(true),
+  isActive: z.boolean().default(true)
 });
 
 export const renderSchema = z.object({
@@ -165,7 +127,7 @@ export const renderSchema = z.object({
   viewType: z.string().optional().nullable(),
   cameraAngle: z.string().optional().nullable(),
   quality: z.string().optional().nullable(),
-  notes: z.string().optional().nullable(),
+  notes: z.string().optional().nullable()
 });
 
 export const cuttingListSchema = z.object({
@@ -177,7 +139,7 @@ export const cuttingListSchema = z.object({
   version: z.number().int().positive().default(1),
   status: z.nativeEnum(CuttingListStatus).default(CuttingListStatus.DRAFT),
   notes: z.string().optional().nullable(),
-  exportPath: z.string().optional().nullable(),
+  exportPath: z.string().optional().nullable()
 });
 
 export const cuttingPieceSchema = z.object({
@@ -193,7 +155,7 @@ export const cuttingPieceSchema = z.object({
   grainDirection: z.string().optional().nullable(),
   edgeBanding: z.string().optional().nullable(),
   comments: z.string().optional().nullable(),
-  sortOrder: z.number().int().min(0).default(0),
+  sortOrder: z.number().int().min(0).default(0)
 });
 
 export const quoteItemSchema = z.object({
@@ -205,7 +167,7 @@ export const quoteItemSchema = z.object({
   unit: z.string().min(1),
   unitPrice: moneySchema,
   total: moneySchema,
-  sortOrder: z.number().int().min(0).default(0),
+  sortOrder: z.number().int().min(0).default(0)
 });
 
 export const quoteSchema = z.object({
@@ -222,7 +184,7 @@ export const quoteSchema = z.object({
   advancePayment: moneySchema.default(0),
   total: moneySchema.default(0),
   notes: z.string().optional().nullable(),
-  items: z.array(quoteItemSchema).default([]),
+  items: z.array(quoteItemSchema).default([])
 });
 
 export const activitySchema = z.object({
@@ -236,7 +198,7 @@ export const activitySchema = z.object({
   priority: z.nativeEnum(AlertPriority).default(AlertPriority.MEDIUM),
   startDate: isoDateSchema,
   dueDate: isoDateSchema,
-  completedAt: isoDateSchema,
+  completedAt: isoDateSchema
 });
 
 export const alertSchema = z.object({
@@ -248,7 +210,7 @@ export const alertSchema = z.object({
   message: z.string().min(5),
   priority: z.nativeEnum(AlertPriority).default(AlertPriority.MEDIUM),
   isRead: z.boolean().default(false),
-  resolvedAt: isoDateSchema,
+  resolvedAt: isoDateSchema
 });
 
 export const documentSchema = z.object({
@@ -262,7 +224,7 @@ export const documentSchema = z.object({
   fileSize: z.number().int().min(0).optional().nullable(),
   documentType: z.nativeEnum(DocumentType).default(DocumentType.OTHER),
   stage: z.string().optional().nullable(),
-  notes: z.string().optional().nullable(),
+  notes: z.string().optional().nullable()
 });
 
 export const historyEntrySchema = z.object({
@@ -275,7 +237,7 @@ export const historyEntrySchema = z.object({
   title: z.string().min(2),
   description: z.string().optional().nullable(),
   beforeJson: jsonStringSchema,
-  afterJson: jsonStringSchema,
+  afterJson: jsonStringSchema
 });
 
 export const commentSchema = z.object({
@@ -288,11 +250,11 @@ export const commentSchema = z.object({
   targetType: z.nativeEnum(CommentTargetType),
   targetId: z.string().optional().nullable(),
   body: z.string().min(2),
-  isResolved: z.boolean().default(false),
+  isResolved: z.boolean().default(false)
 });
 
 export const projectIdInputSchema = z.object({
-  projectId: idSchema,
+  projectId: idSchema
 });
 
 export type UserInput = z.infer<typeof userSchema>;

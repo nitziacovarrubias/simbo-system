@@ -32,8 +32,8 @@ async function main(): Promise<void> {
       lastName: 'Osuna',
       phone: '+52 662 150 4015',
       email: 'arquitecto@bois.mx',
-      address: 'Hermosillo, Sonora',
-    },
+      address: 'Hermosillo, Sonora'
+    }
   });
 
   const supervisorPerson = await prisma.person.create({
@@ -42,8 +42,8 @@ async function main(): Promise<void> {
       lastName: 'Hurtado',
       phone: '+52 662 345 6789',
       email: 'supervisor@bois.mx',
-      address: 'Hermosillo, Sonora',
-    },
+      address: 'Hermosillo, Sonora'
+    }
   });
 
   const collaboratorPerson = await prisma.person.create({
@@ -52,8 +52,8 @@ async function main(): Promise<void> {
       lastName: 'Herrera',
       phone: '+52 662 567 1234',
       email: 'colaborador@bois.mx',
-      address: 'Hermosillo, Sonora',
-    },
+      address: 'Hermosillo, Sonora'
+    }
   });
 
   const responsiblePerson = await prisma.person.create({
@@ -62,8 +62,8 @@ async function main(): Promise<void> {
       lastName: 'Ochoa',
       phone: '+52 662 987 6543',
       email: 'responsable@bois.mx',
-      address: 'Hermosillo, Sonora',
-    },
+      address: 'Hermosillo, Sonora'
+    }
   });
 
   const architect = await prisma.user.create({
@@ -72,8 +72,8 @@ async function main(): Promise<void> {
       username: 'architect',
       email: 'arquitecto@bois.mx',
       passwordHash: 'demo-password-hash-architect',
-      role: 'ARCHITECT',
-    },
+      role: 'ARCHITECT'
+    }
   });
 
   const supervisor = await prisma.user.create({
@@ -82,8 +82,8 @@ async function main(): Promise<void> {
       username: 'supervisor',
       email: 'supervisor@bois.mx',
       passwordHash: 'demo-password-hash-supervisor',
-      role: 'SUPERVISOR',
-    },
+      role: 'SUPERVISOR'
+    }
   });
 
   await prisma.user.create({
@@ -92,8 +92,8 @@ async function main(): Promise<void> {
       username: 'collaborator',
       email: 'colaborador@bois.mx',
       passwordHash: 'demo-password-hash-collaborator',
-      role: 'COLLABORATOR',
-    },
+      role: 'COLLABORATOR'
+    }
   });
 
   const responsible = await prisma.user.create({
@@ -102,8 +102,8 @@ async function main(): Promise<void> {
       username: 'responsible',
       email: 'responsable@bois.mx',
       passwordHash: 'demo-password-hash-responsible',
-      role: 'RESPONSIBLE',
-    },
+      role: 'RESPONSIBLE'
+    }
   });
 
   const clientPerson = await prisma.person.create({
@@ -113,8 +113,8 @@ async function main(): Promise<void> {
       phone: '+52 662 345 6789',
       email: 'gustavo.correa@gmail.com',
       address: 'Av. 12a esquina Calle XIII, San Carlos, Sonora, México',
-      rfc: 'COGG800101ABC',
-    },
+      rfc: 'COGG800101ABC'
+    }
   });
 
   const client = await prisma.client.create({
@@ -123,8 +123,8 @@ async function main(): Promise<void> {
       projectAddress: 'Av. 12a esquina Calle XIII, San Carlos, Sonora, México',
       initialContactDate: new Date('2025-04-15T10:00:00.000Z'),
       consentAcceptedAt: new Date('2025-04-15T10:30:00.000Z'),
-      notes: 'Cliente interesado en cocina integral con isla y paneles blancos.',
-    },
+      notes: 'Cliente interesado en cocina integral con isla y paneles blancos.'
+    }
   });
 
   const whiteMdf = await prisma.material.create({
@@ -136,8 +136,8 @@ async function main(): Promise<void> {
       cost: 780,
       thicknessMm: 15,
       colorHex: '#F2F2F2',
-      supplier: 'Proveedor local',
-    },
+      supplier: 'Proveedor local'
+    }
   });
 
   const blackGranite = await prisma.material.create({
@@ -149,8 +149,8 @@ async function main(): Promise<void> {
       cost: 1650,
       thicknessMm: 30,
       colorHex: '#202020',
-      supplier: 'Canteras Sonora',
-    },
+      supplier: 'Canteras Sonora'
+    }
   });
 
   const hardware = await prisma.material.create({
@@ -160,8 +160,8 @@ async function main(): Promise<void> {
       category: 'Herrajes',
       unit: 'PIECE',
       cost: 95,
-      supplier: 'Herrajes del Norte',
-    },
+      supplier: 'Herrajes del Norte'
+    }
   });
 
   const baseTemplate = await prisma.moduleTemplate.create({
@@ -175,9 +175,9 @@ async function main(): Promise<void> {
       parameterJson: JSON.stringify({
         doors: 2,
         shelves: 1,
-        hasToeKick: true,
-      }),
-    },
+        hasToeKick: true
+      })
+    }
   });
 
   const wallTemplate = await prisma.moduleTemplate.create({
@@ -190,20 +190,37 @@ async function main(): Promise<void> {
       defaultDepthMm: 350,
       parameterJson: JSON.stringify({
         doors: 2,
-        shelves: 2,
-      }),
-    },
+        shelves: 2
+      })
+    }
   });
 
+  const roomSpaceTimestamp = new Date('2025-04-15T15:00:00.000Z').toISOString();
   const roomSpace = {
-    shape: 'RECTANGULAR',
+    layoutType: 'RECTANGULAR',
     widthMm: 3400,
     depthMm: 2800,
     heightMm: 2400,
     wallThicknessMm: 120,
-    doors: [{ name: 'Puerta principal', widthMm: 900, positionMm: 300 }],
-    windows: [{ name: 'Ventana', widthMm: 1200, positionMm: 1900 }],
     notes: 'Medidas capturadas en sitio por arquitectura.',
+    openings: [
+      {
+        name: 'Puerta principal',
+        type: 'DOOR',
+        widthMm: 900,
+        heightMm: 2100,
+        positionMm: 300
+      },
+      {
+        name: 'Ventana',
+        type: 'WINDOW',
+        widthMm: 1200,
+        heightMm: 1100,
+        positionMm: 1900
+      }
+    ],
+    createdAt: roomSpaceTimestamp,
+    updatedAt: roomSpaceTimestamp
   };
 
   const project = await prisma.project.create({
@@ -216,8 +233,8 @@ async function main(): Promise<void> {
       status: 'DESIGN',
       startDate: new Date('2025-04-15T09:00:00.000Z'),
       deliveryDate: new Date('2025-05-12T18:00:00.000Z'),
-      roomSpaceJson: JSON.stringify(roomSpace),
-    },
+      roomSpaceJson: JSON.stringify(roomSpace)
+    }
   });
 
   const design = await prisma.design.create({
@@ -231,10 +248,10 @@ async function main(): Promise<void> {
       designJson: JSON.stringify({
         camera: { position: [3, 2, 4], target: [0, 0, 0] },
         units: 'mm',
-        style: 'Minimalista moderno',
+        style: 'Minimalista moderno'
       }),
-      notes: 'Primera propuesta con isla central y alacenas blancas.',
-    },
+      notes: 'Primera propuesta con isla central y alacenas blancas.'
+    }
   });
 
   await prisma.designModule.createMany({
@@ -251,7 +268,7 @@ async function main(): Promise<void> {
         widthMm: 1800,
         heightMm: 700,
         depthMm: 560,
-        quantity: 3,
+        quantity: 3
       },
       {
         designId: design.id,
@@ -265,7 +282,7 @@ async function main(): Promise<void> {
         widthMm: 1800,
         heightMm: 700,
         depthMm: 350,
-        quantity: 3,
+        quantity: 3
       },
       {
         designId: design.id,
@@ -278,9 +295,9 @@ async function main(): Promise<void> {
         widthMm: 1600,
         heightMm: 900,
         depthMm: 900,
-        quantity: 1,
-      },
-    ],
+        quantity: 1
+      }
+    ]
   });
 
   await prisma.render.create({
@@ -300,8 +317,8 @@ async function main(): Promise<void> {
       viewType: 'Isométrica',
       cameraAngle: 'Frontal',
       quality: 'Alta',
-      notes: 'Agregar iluminación bajo alacenas para realzar profundidad.',
-    },
+      notes: 'Agregar iluminación bajo alacenas para realzar profundidad.'
+    }
   });
 
   const cuttingList = await prisma.cuttingList.create({
@@ -311,8 +328,8 @@ async function main(): Promise<void> {
       generatedById: supervisor.id,
       version: 1,
       status: 'PENDING_VALIDATION',
-      notes: 'Lista generada con piezas iniciales para revisión.',
-    },
+      notes: 'Lista generada con piezas iniciales para revisión.'
+    }
   });
 
   await prisma.cuttingPiece.createMany({
@@ -328,7 +345,7 @@ async function main(): Promise<void> {
         grainDirection: 'VERTICAL',
         edgeBanding: '2 cantos visibles',
         comments: 'Vertical, lado visible del mueble',
-        sortOrder: 1,
+        sortOrder: 1
       },
       {
         cuttingListId: cuttingList.id,
@@ -341,7 +358,7 @@ async function main(): Promise<void> {
         grainDirection: 'NONE',
         edgeBanding: 'Sin cantear',
         comments: 'Interno, no visible',
-        sortOrder: 2,
+        sortOrder: 2
       },
       {
         cuttingListId: cuttingList.id,
@@ -354,9 +371,9 @@ async function main(): Promise<void> {
         grainDirection: 'VERTICAL',
         edgeBanding: '4 cantos',
         comments: 'Puerta abatible estándar',
-        sortOrder: 3,
-      },
-    ],
+        sortOrder: 3
+      }
+    ]
   });
 
   const quoteSubtotal = 18500;
@@ -376,8 +393,8 @@ async function main(): Promise<void> {
       taxAmount,
       advancePayment: total * 0.5,
       total,
-      notes: 'Cotización inicial pendiente de aprobación del cliente.',
-    },
+      notes: 'Cotización inicial pendiente de aprobación del cliente.'
+    }
   });
 
   await prisma.quoteItem.createMany({
@@ -390,7 +407,7 @@ async function main(): Promise<void> {
         unit: 'Hoja',
         unitPrice: 780,
         total: 6240,
-        sortOrder: 1,
+        sortOrder: 1
       },
       {
         quoteId: quote.id,
@@ -400,7 +417,7 @@ async function main(): Promise<void> {
         unit: 'm2',
         unitPrice: 1650,
         total: 6930,
-        sortOrder: 2,
+        sortOrder: 2
       },
       {
         quoteId: quote.id,
@@ -410,9 +427,9 @@ async function main(): Promise<void> {
         unit: 'Pieza',
         unitPrice: 95,
         total: 5320,
-        sortOrder: 3,
-      },
-    ],
+        sortOrder: 3
+      }
+    ]
   });
 
   await prisma.activity.createMany({
@@ -426,7 +443,7 @@ async function main(): Promise<void> {
         priority: 'MEDIUM',
         startDate: new Date('2025-04-15T09:00:00.000Z'),
         dueDate: new Date('2025-04-15T18:00:00.000Z'),
-        completedAt: new Date('2025-04-15T15:00:00.000Z'),
+        completedAt: new Date('2025-04-15T15:00:00.000Z')
       },
       {
         projectId: project.id,
@@ -436,7 +453,7 @@ async function main(): Promise<void> {
         status: 'IN_PROGRESS',
         priority: 'HIGH',
         startDate: new Date('2025-04-20T09:00:00.000Z'),
-        dueDate: new Date('2025-04-25T18:00:00.000Z'),
+        dueDate: new Date('2025-04-25T18:00:00.000Z')
       },
       {
         projectId: project.id,
@@ -446,9 +463,9 @@ async function main(): Promise<void> {
         status: 'PENDING',
         priority: 'MEDIUM',
         startDate: new Date('2025-05-07T09:00:00.000Z'),
-        dueDate: new Date('2025-05-10T18:00:00.000Z'),
-      },
-    ],
+        dueDate: new Date('2025-05-10T18:00:00.000Z')
+      }
+    ]
   });
 
   await prisma.alert.create({
@@ -456,9 +473,10 @@ async function main(): Promise<void> {
       projectId: project.id,
       createdById: supervisor.id,
       title: 'Sin confirmación',
-      message: 'Retraso en confirmación de materiales por parte del proveedor. Se requiere seguimiento urgente.',
-      priority: 'URGENT',
-    },
+      message:
+        'Retraso en confirmación de materiales por parte del proveedor. Se requiere seguimiento urgente.',
+      priority: 'URGENT'
+    }
   });
 
   await prisma.document.createMany({
@@ -472,7 +490,7 @@ async function main(): Promise<void> {
         mimeType: 'application/pdf',
         documentType: 'MEASUREMENTS',
         stage: 'Planeación',
-        notes: 'Documento base para iniciar diseño.',
+        notes: 'Documento base para iniciar diseño.'
       },
       {
         projectId: project.id,
@@ -483,9 +501,9 @@ async function main(): Promise<void> {
         mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
         documentType: 'QUOTE',
         stage: 'Planeación',
-        notes: 'Cotización para revisión del cliente.',
-      },
-    ],
+        notes: 'Cotización para revisión del cliente.'
+      }
+    ]
   });
 
   await prisma.historyEntry.createMany({
@@ -497,7 +515,7 @@ async function main(): Promise<void> {
         entityType: 'Project',
         entityId: project.id,
         title: 'Proyecto creado',
-        description: 'Se creó el expediente inicial con cliente y medidas.',
+        description: 'Se creó el expediente inicial con cliente y medidas.'
       },
       {
         projectId: project.id,
@@ -506,7 +524,7 @@ async function main(): Promise<void> {
         entityType: 'Design',
         entityId: design.id,
         title: 'Diseño preliminar creado',
-        description: 'Se guardó la primera versión del diseño.',
+        description: 'Se guardó la primera versión del diseño.'
       },
       {
         projectId: project.id,
@@ -515,9 +533,9 @@ async function main(): Promise<void> {
         entityType: 'CuttingList',
         entityId: cuttingList.id,
         title: 'Despiece generado',
-        description: 'Se generó la primera lista de despiece pendiente de validación.',
-      },
-    ],
+        description: 'Se generó la primera lista de despiece pendiente de validación.'
+      }
+    ]
   });
 
   await prisma.comment.create({
@@ -527,8 +545,8 @@ async function main(): Promise<void> {
       userId: supervisor.id,
       targetType: 'DESIGN',
       targetId: design.id,
-      body: 'Revisar profundidad de la isla antes de aprobar diseño final.',
-    },
+      body: 'Revisar profundidad de la isla antes de aprobar diseño final.'
+    }
   });
 
   console.info('Seed completado: usuarios, cliente, proyecto y datos demo creados.');
