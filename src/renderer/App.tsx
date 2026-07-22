@@ -10,6 +10,7 @@ import { EditProjectPage, NewProjectPage } from '@renderer/modules/projects/Proj
 import { ProjectDetailPage } from '@renderer/modules/projects/ProjectDetailPage';
 import { ProjectsPage } from '@renderer/modules/projects/ProjectsPage';
 import { PlaceholderPage } from '@renderer/modules/placeholder/PlaceholderPage';
+import { DesignEditorPage } from '@renderer/modules/design-editor/DesignEditorPage';
 import { appRoutes } from '@renderer/routes/app-routes';
 import { useSessionStore } from '@renderer/stores/session.store';
 import type { UserRole } from '@shared/constants/roles';
@@ -58,8 +59,10 @@ function ProtectedRoutes(): JSX.Element {
 export function App(): JSX.Element {
   const clientsRoute = appRoutes.find((route) => route.path === '/clients');
   const projectsRoute = appRoutes.find((route) => route.path === '/projects');
+  const designRoute = appRoutes.find((route) => route.path === '/design-editor');
   const placeholderRoutes = appRoutes.filter(
-    (route) => route.path !== '/clients' && route.path !== '/projects'
+    (route) =>
+      route.path !== '/clients' && route.path !== '/projects' && route.path !== '/design-editor'
   );
 
   return (
@@ -135,6 +138,15 @@ export function App(): JSX.Element {
                 </RequireRole>
               }
             />
+            <Route
+              path="/projects/:projectId/design"
+              element={
+                <RequireRole allowedRoles={designRoute?.allowedRoles ?? []}>
+                  <DesignEditorPage />
+                </RequireRole>
+              }
+            />
+            <Route path="/design-editor" element={<Navigate to="/projects" replace />} />
 
             {placeholderRoutes.map((route) => (
               <Route

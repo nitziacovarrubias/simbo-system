@@ -255,9 +255,11 @@ model DesignModule {
   heightMm    Float
   depthMm     Float
   quantity    Int      @default(1)
-  notes       String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  notes        String?
+  colorHex    String   @default("#81949C")
+  hasCollision Boolean @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   design   Design          @relation(fields: [designId], references: [id], onDelete: Cascade)
   template ModuleTemplate? @relation(fields: [templateId], references: [id], onDelete: SetNull)

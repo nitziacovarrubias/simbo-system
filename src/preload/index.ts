@@ -22,6 +22,15 @@ const simboApi: SimboApi = {
     ipcRenderer.invoke(IPC_CHANNELS.saveProjectRoomSpace, projectId, input),
   listDesignsByProject: (projectId) =>
     ipcRenderer.invoke(IPC_CHANNELS.listDesignsByProject, projectId),
+  getDesignByProjectId: (projectId) =>
+    ipcRenderer.invoke(IPC_CHANNELS.getDesignByProjectId, projectId),
+  createDesign: (projectId, input) =>
+    ipcRenderer.invoke(IPC_CHANNELS.createDesign, projectId, input),
+  updateDesign: (designId, input) => ipcRenderer.invoke(IPC_CHANNELS.updateDesign, designId, input),
+  saveDesignModules: (designId, modules) =>
+    ipcRenderer.invoke(IPC_CHANNELS.saveDesignModules, designId, modules),
+  getModuleTemplates: () => ipcRenderer.invoke(IPC_CHANNELS.getModuleTemplates),
+  getMaterials: () => ipcRenderer.invoke(IPC_CHANNELS.getMaterials),
   listMaterials: () => ipcRenderer.invoke(IPC_CHANNELS.listMaterials),
   listRendersByProject: (projectId) =>
     ipcRenderer.invoke(IPC_CHANNELS.listRendersByProject, projectId),

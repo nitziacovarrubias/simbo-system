@@ -126,7 +126,7 @@ export function ProjectDetailPage(): JSX.Element {
           <h3>Continuar a diseño</h3>
           <p>
             {project.roomSpace
-              ? 'Las medidas están guardadas. El siguiente módulo usará este espacio para el editor 2D/3D.'
+              ? 'Las medidas están guardadas. Puedes abrir el editor 2D/3D y continuar el diseño.'
               : 'Guarda primero las medidas para preparar el proyecto para diseño.'}
           </p>
         </div>
@@ -134,7 +134,7 @@ export function ProjectDetailPage(): JSX.Element {
           className="accent-button"
           type="button"
           disabled={!project.roomSpace}
-          onClick={() => navigate(`/design-editor?projectId=${project.id}`)}
+          onClick={() => navigate(`/projects/${project.id}/design`)}
         >
           Continuar a diseño <MoveRight size={18} aria-hidden="true" />
         </button>

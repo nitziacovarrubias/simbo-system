@@ -16,6 +16,14 @@ import type {
   UserListItem
 } from './domain.types';
 import type { ClientDetail, ClientMutationInput } from './client.types';
+import type {
+  CreateDesignInput,
+  DesignDocument,
+  DesignMaterialItem,
+  DesignModuleMutationInput,
+  ModuleTemplateItem,
+  UpdateDesignInput
+} from './design.types';
 import type { ProjectDetail, ProjectMutationInput } from './project.types';
 import type { RoomSpaceInput } from './room-space.types';
 
@@ -34,6 +42,15 @@ export interface SimboApi {
   updateProject: (projectId: string, input: ProjectMutationInput) => Promise<ProjectDetail>;
   saveProjectRoomSpace: (projectId: string, input: RoomSpaceInput) => Promise<ProjectDetail>;
   listDesignsByProject: (projectId: string) => Promise<DesignListItem[]>;
+  getDesignByProjectId: (projectId: string) => Promise<DesignDocument | null>;
+  createDesign: (projectId: string, input: CreateDesignInput) => Promise<DesignDocument>;
+  updateDesign: (designId: string, input: UpdateDesignInput) => Promise<DesignDocument>;
+  saveDesignModules: (
+    designId: string,
+    modules: DesignModuleMutationInput[]
+  ) => Promise<DesignDocument>;
+  getModuleTemplates: () => Promise<ModuleTemplateItem[]>;
+  getMaterials: () => Promise<DesignMaterialItem[]>;
   listMaterials: () => Promise<MaterialListItem[]>;
   listRendersByProject: (projectId: string) => Promise<RenderListItem[]>;
   listCuttingListsByProject: (projectId: string) => Promise<CuttingListItem[]>;

@@ -1,13 +1,14 @@
 {
-    "extends": "./tsconfig.json",
-    "include": [
-        "src/**/*.ts",
-        "src/**/*.tsx",
-        "tests/**/*.ts",
-        "tests/**/*.tsx",
-        "vite.config.ts",
-        "vitest.config.ts",
-        "electron.vite.config.ts",
-        "playwright.config.ts"
-    ]
+  "extends": "./tsconfig.json",
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "prisma/seed.ts",
+    "tests/**/*.ts",
+    "tests/**/*.tsx",
+    "vite.config.ts",
+    "vitest.config.ts",
+    "electron.vite.config.ts",
+    "playwright.config.ts"
+  ]
 }

@@ -48,7 +48,7 @@ export const appRoutes: AppRoute[] = [
   {
     path: '/design-editor',
     title: 'Editor de diseño',
-    description: 'El editor 2D/3D se implementará en el siguiente módulo.',
+    description: 'Editor 2D/3D para visualizar espacios y colocar módulos paramétricos.',
     Icon: Ruler,
     allowedRoles: [UserRole.ARCHITECT, UserRole.COLLABORATOR],
     moduleKey: 'designEditor'

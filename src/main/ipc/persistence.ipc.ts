@@ -17,9 +17,12 @@ import { DocumentService } from '../services/document.service';
 import { HistoryService } from '../services/history.service';
 import {
   clientSchema,
+  createDesignSchema,
+  designModulesSchema,
   projectIdInputSchema,
   projectSchema,
-  roomSpaceSchema
+  roomSpaceSchema,
+  updateDesignSchema
 } from '../../shared/schemas';
 
 const idOnlySchema = z.string().min(1);
@@ -99,6 +102,30 @@ export function registerPersistenceIpcHandlers(): void {
     const input = projectIdInputSchema.parse({ projectId });
     return designService.listDesignsByProject(input.projectId);
   });
+
+  registerSafeHandler(IPC_CHANNELS.getDesignByProjectId, (projectId: string) => {
+    const input = projectIdInputSchema.parse({ projectId });
+    return designService.getDesignByProjectId(input.projectId);
+  });
+
+  registerSafeHandler(IPC_CHANNELS.createDesign, (projectId: string, input: unknown) => {
+    const validProjectId = idOnlySchema.parse(projectId);
+    return designService.createDesign(validProjectId, createDesignSchema.parse(input));
+  });
+
+  registerSafeHandler(IPC_CHANNELS.updateDesign, (designId: string, input: unknown) =>
+    designService.updateDesign(idOnlySchema.parse(designId), updateDesignSchema.parse(input))
+  );
+
+  registerSafeHandler(IPC_CHANNELS.saveDesignModules, (designId: string, modules: unknown) =>
+    designService.saveDesignModules(
+      idOnlySchema.parse(designId),
+      designModulesSchema.parse(modules)
+    )
+  );
+
+  registerSafeHandler(IPC_CHANNELS.getModuleTemplates, () => designService.getModuleTemplates());
+  registerSafeHandler(IPC_CHANNELS.getMaterials, () => materialService.getMaterials());
 
   registerSafeHandler(IPC_CHANNELS.listRendersByProject, (projectId: string) => {
     const validProjectId = idOnlySchema.parse(projectId);

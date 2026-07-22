@@ -129,12 +129,12 @@ async function main(): Promise<void> {
 
   const whiteMdf = await prisma.material.create({
     data: {
-      code: 'MDF-BLANCO-15',
-      name: 'MDF blanco mate 15mm',
+      code: 'MDF-BLANCO-18',
+      name: 'MDF Blanco 18mm',
       category: 'Madera',
       unit: 'SHEET',
       cost: 780,
-      thicknessMm: 15,
+      thicknessMm: 18,
       colorHex: '#F2F2F2',
       supplier: 'Proveedor local'
     }
@@ -142,15 +142,47 @@ async function main(): Promise<void> {
 
   const blackGranite = await prisma.material.create({
     data: {
-      code: 'CUBIERTA-NEGRA',
-      name: 'Cubierta negra tipo granito',
+      code: 'CUARZO-GRIS',
+      name: 'Cubierta Cuarzo Gris',
       category: 'Cubierta',
       unit: 'SQUARE_METER',
       cost: 1650,
       thicknessMm: 30,
-      colorHex: '#202020',
+      colorHex: '#777A7C',
       supplier: 'Canteras Sonora'
     }
+  });
+
+  await prisma.material.createMany({
+    data: [
+      {
+        code: 'MELAMINA-NOGAL-18',
+        name: 'Melamina Nogal 18mm',
+        category: 'Madera',
+        unit: 'SHEET',
+        cost: 920,
+        thicknessMm: 18,
+        colorHex: '#8A5A3B'
+      },
+      {
+        code: 'MDF-NEGRO-18',
+        name: 'MDF Negro 18mm',
+        category: 'Madera',
+        unit: 'SHEET',
+        cost: 860,
+        thicknessMm: 18,
+        colorHex: '#222222'
+      },
+      {
+        code: 'MADERA-NATURAL',
+        name: 'Madera Natural',
+        category: 'Madera',
+        unit: 'BOARD',
+        cost: 1200,
+        thicknessMm: 18,
+        colorHex: '#B8895B'
+      }
+    ]
   });
 
   const hardware = await prisma.material.create({
@@ -167,10 +199,10 @@ async function main(): Promise<void> {
   const baseTemplate = await prisma.moduleTemplate.create({
     data: {
       code: 'BASE-CABINET-001',
-      name: 'Gabinete base',
+      name: 'Gabinete bajo',
       category: 'Cocina',
-      defaultWidthMm: 600,
-      defaultHeightMm: 700,
+      defaultWidthMm: 800,
+      defaultHeightMm: 720,
       defaultDepthMm: 560,
       parameterJson: JSON.stringify({
         doors: 2,
@@ -183,9 +215,9 @@ async function main(): Promise<void> {
   const wallTemplate = await prisma.moduleTemplate.create({
     data: {
       code: 'WALL-CABINET-001',
-      name: 'Alacena superior',
+      name: 'Alacena',
       category: 'Cocina',
-      defaultWidthMm: 600,
+      defaultWidthMm: 800,
       defaultHeightMm: 700,
       defaultDepthMm: 350,
       parameterJson: JSON.stringify({
@@ -193,6 +225,46 @@ async function main(): Promise<void> {
         shelves: 2
       })
     }
+  });
+
+  await prisma.moduleTemplate.createMany({
+    data: [
+      {
+        code: 'TALL-CABINET-001',
+        name: 'Torre',
+        category: 'Cocina',
+        defaultWidthMm: 600,
+        defaultHeightMm: 2100,
+        defaultDepthMm: 560
+      },
+      {
+        code: 'SHELF-001',
+        name: 'Repisa',
+        category: 'Cocina',
+        defaultWidthMm: 800,
+        defaultHeightMm: 30,
+        defaultDepthMm: 300
+      },
+      {
+        code: 'ISLAND-001',
+        name: 'Isla',
+        category: 'Cocina',
+        defaultWidthMm: 1800,
+        defaultHeightMm: 900,
+        defaultDepthMm: 900
+      },
+      {
+        code: 'APPLIANCE-PLACEHOLDER-001',
+        name: 'Electrodoméstico',
+        category: 'Electrodomésticos',
+        defaultWidthMm: 600,
+        defaultHeightMm: 850,
+        defaultDepthMm: 600
+      }
+    ]
+  });
+  const islandTemplate = await prisma.moduleTemplate.findUniqueOrThrow({
+    where: { code: 'ISLAND-001' }
   });
 
   const roomSpaceTimestamp = new Date('2025-04-15T15:00:00.000Z').toISOString();
@@ -274,7 +346,7 @@ async function main(): Promise<void> {
         designId: design.id,
         templateId: wallTemplate.id,
         materialId: whiteMdf.id,
-        name: 'Alacena superior',
+        name: 'Alacena',
         kind: 'WALL_CABINET',
         positionXmm: 500,
         positionYmm: 1650,
@@ -286,6 +358,7 @@ async function main(): Promise<void> {
       },
       {
         designId: design.id,
+        templateId: islandTemplate.id,
         materialId: blackGranite.id,
         name: 'Isla central',
         kind: 'ISLAND',
