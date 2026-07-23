@@ -15,6 +15,8 @@ import {
   RenderStatus,
   UserRole
 } from '../constants/domain.enums';
+import { EDGE_BANDING_OPTIONS } from '../constants/edge-banding';
+import { GRAIN_DIRECTIONS } from '../constants/grain-direction';
 
 const idSchema = z.string().min(1, 'El identificador es obligatorio.');
 const optionalIdSchema = idSchema.optional().nullable();
@@ -137,24 +139,35 @@ export const cuttingListSchema = z.object({
   generatedById: optionalIdSchema,
   validatedById: optionalIdSchema,
   version: z.number().int().positive().default(1),
+  designVersion: z.number().int().positive().optional().nullable(),
   status: z.nativeEnum(CuttingListStatus).default(CuttingListStatus.DRAFT),
   notes: z.string().optional().nullable(),
-  exportPath: z.string().optional().nullable()
+  validationNotes: z.string().optional().nullable(),
+  exportPath: z.string().optional().nullable(),
+  generatedAt: isoDateSchema,
+  authorizedAt: isoDateSchema,
+  rejectedAt: isoDateSchema,
+  exportedAt: isoDateSchema
 });
 
 export const cuttingPieceSchema = z.object({
   id: idSchema.optional(),
   cuttingListId: idSchema,
+  sourceModuleId: optionalIdSchema,
+  sourceModuleName: z.string().min(1),
+  pieceName: z.string().min(1),
+  category: z.string().min(1),
+  quantity: z.number().int().positive(),
   materialId: optionalIdSchema,
-  name: z.string().min(2),
+  materialName: z.string().min(1),
+  thicknessMm: z.number().min(0),
   widthMm: positiveMeasureSchema,
   heightMm: positiveMeasureSchema,
   depthMm: positiveMeasureSchema.optional().nullable(),
-  thicknessMm: positiveMeasureSchema.optional().nullable(),
-  quantity: z.number().int().positive(),
-  grainDirection: z.string().optional().nullable(),
-  edgeBanding: z.string().optional().nullable(),
+  grainDirection: z.enum(GRAIN_DIRECTIONS),
+  edgeBanding: z.enum(EDGE_BANDING_OPTIONS),
   comments: z.string().optional().nullable(),
+  isManual: z.boolean().default(false),
   sortOrder: z.number().int().min(0).default(0)
 });
 

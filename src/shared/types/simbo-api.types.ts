@@ -3,7 +3,6 @@ import type {
   AlertListItem,
   AppInfo,
   ClientListItem,
-  CuttingListItem,
   DashboardSummary,
   DatabaseStatus,
   DesignListItem,
@@ -26,6 +25,12 @@ import type {
 } from './design.types';
 import type { ProjectDetail, ProjectMutationInput } from './project.types';
 import type { RoomSpaceInput } from './room-space.types';
+import type {
+  CuttingListDetail,
+  CuttingListExportResult,
+  CuttingListSummary,
+  CuttingPieceInput
+} from './cutting-list.types';
 
 export interface SimboApi {
   getAppInfo: () => Promise<AppInfo>;
@@ -53,7 +58,15 @@ export interface SimboApi {
   getMaterials: () => Promise<DesignMaterialItem[]>;
   listMaterials: () => Promise<MaterialListItem[]>;
   listRendersByProject: (projectId: string) => Promise<RenderListItem[]>;
-  listCuttingListsByProject: (projectId: string) => Promise<CuttingListItem[]>;
+  getCuttingListsByProjectId: (projectId: string) => Promise<CuttingListSummary[]>;
+  getCuttingListById: (cuttingListId: string) => Promise<CuttingListDetail>;
+  generateCuttingList: (projectId: string, designId: string) => Promise<CuttingListDetail>;
+  updateCuttingPiece: (pieceId: string, input: Partial<CuttingPieceInput>) => Promise<CuttingListDetail>;
+  addManualCuttingPiece: (cuttingListId: string, input: CuttingPieceInput) => Promise<CuttingListDetail>;
+  removeCuttingPiece: (pieceId: string) => Promise<CuttingListDetail>;
+  authorizeCuttingList: (cuttingListId: string, notes?: string) => Promise<CuttingListDetail>;
+  rejectCuttingList: (cuttingListId: string, reason: string) => Promise<CuttingListDetail>;
+  exportCuttingListToExcel: (cuttingListId: string) => Promise<CuttingListExportResult>;
   listQuotesByProject: (projectId: string) => Promise<QuoteListItem[]>;
   listActivitiesByProject: (projectId: string) => Promise<ActivityListItem[]>;
   listAlertsByProject: (projectId: string) => Promise<AlertListItem[]>;

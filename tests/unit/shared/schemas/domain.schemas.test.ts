@@ -19,10 +19,16 @@ describe('domain schemas', () => {
   it('rejects negative cutting piece measures', () => {
     const result = cuttingPieceSchema.safeParse({
       cuttingListId: 'cutting-list-1',
-      name: 'Lateral gabinete bajo',
+      sourceModuleName: 'Gabinete bajo',
+      pieceName: 'Lateral gabinete bajo',
+      category: 'Estructura',
+      materialName: 'MDF 18mm',
+      thicknessMm: 18,
       widthMm: -550,
       heightMm: 700,
       quantity: 1,
+      grainDirection: 'VERTICAL',
+      edgeBanding: 'VISIBLE_EDGES',
     });
 
     expect(result.success).toBe(false);

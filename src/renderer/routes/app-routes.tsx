@@ -56,7 +56,7 @@ export const appRoutes: AppRoute[] = [
   {
     path: '/cutting-list',
     title: 'Despiece',
-    description: 'Módulo futuro para generar, revisar, autorizar y exportar despieces.',
+    description: 'Generación automática, revisión, versionado, autorización y exportación de despieces.',
     Icon: ClipboardList,
     allowedRoles: [UserRole.SUPERVISOR, UserRole.ARCHITECT],
     moduleKey: 'cuttingList'

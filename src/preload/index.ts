@@ -34,8 +34,24 @@ const simboApi: SimboApi = {
   listMaterials: () => ipcRenderer.invoke(IPC_CHANNELS.listMaterials),
   listRendersByProject: (projectId) =>
     ipcRenderer.invoke(IPC_CHANNELS.listRendersByProject, projectId),
-  listCuttingListsByProject: (projectId) =>
-    ipcRenderer.invoke(IPC_CHANNELS.listCuttingListsByProject, projectId),
+  getCuttingListsByProjectId: (projectId) =>
+    ipcRenderer.invoke(IPC_CHANNELS.getCuttingListsByProjectId, projectId),
+  getCuttingListById: (cuttingListId) =>
+    ipcRenderer.invoke(IPC_CHANNELS.getCuttingListById, cuttingListId),
+  generateCuttingList: (projectId, designId) =>
+    ipcRenderer.invoke(IPC_CHANNELS.generateCuttingList, projectId, designId),
+  updateCuttingPiece: (pieceId, input) =>
+    ipcRenderer.invoke(IPC_CHANNELS.updateCuttingPiece, pieceId, input),
+  addManualCuttingPiece: (cuttingListId, input) =>
+    ipcRenderer.invoke(IPC_CHANNELS.addManualCuttingPiece, cuttingListId, input),
+  removeCuttingPiece: (pieceId) =>
+    ipcRenderer.invoke(IPC_CHANNELS.removeCuttingPiece, pieceId),
+  authorizeCuttingList: (cuttingListId, notes) =>
+    ipcRenderer.invoke(IPC_CHANNELS.authorizeCuttingList, cuttingListId, notes),
+  rejectCuttingList: (cuttingListId, reason) =>
+    ipcRenderer.invoke(IPC_CHANNELS.rejectCuttingList, cuttingListId, reason),
+  exportCuttingListToExcel: (cuttingListId) =>
+    ipcRenderer.invoke(IPC_CHANNELS.exportCuttingListToExcel, cuttingListId),
   listQuotesByProject: (projectId) =>
     ipcRenderer.invoke(IPC_CHANNELS.listQuotesByProject, projectId),
   listActivitiesByProject: (projectId) =>

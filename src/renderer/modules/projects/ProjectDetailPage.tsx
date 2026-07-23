@@ -1,4 +1,4 @@
-import { ArrowLeft, Edit3, History, MapPin, MoveRight, UserRound } from 'lucide-react';
+import { ArrowLeft, ClipboardList, Edit3, History, MapPin, MoveRight, UserRound } from 'lucide-react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { PROJECT_STATUS_LABEL } from '@renderer/utils/domain-labels';
 import { formatDate, getErrorMessage } from '@renderer/utils/formatters';
@@ -137,6 +137,20 @@ export function ProjectDetailPage(): JSX.Element {
           onClick={() => navigate(`/projects/${project.id}/design`)}
         >
           Continuar a diseño <MoveRight size={18} aria-hidden="true" />
+        </button>
+      </div>
+
+      <div className="continue-design-card">
+        <div>
+          <h3>Generar despiece</h3>
+          <p>Abre la lista de despiece para generar piezas desde el diseño guardado, validar versiones y exportar a Excel.</p>
+        </div>
+        <button
+          className="accent-button"
+          type="button"
+          onClick={() => navigate(`/projects/${project.id}/cutting-list`)}
+        >
+          Abrir despiece <ClipboardList size={18} aria-hidden="true" />
         </button>
       </div>
 

@@ -88,6 +88,10 @@ export class DesignService {
     }
     const latest = await this.designs.findLatestVersion(projectId);
     await this.designs.markPreviousDesignsAsNotCurrent(projectId);
+    await prisma.cuttingList.updateMany({
+      where: { projectId, status: { not: 'OUTDATED' } },
+      data: { status: 'OUTDATED' }
+    });
     const design = await this.designs.create({
       project: { connect: { id: projectId } },
       title: input.title,
@@ -149,6 +153,10 @@ export class DesignService {
         });
       }
       await tx.design.update({ where: { id: designId }, data: { updatedAt: new Date() } });
+      await tx.cuttingList.updateMany({
+        where: { designId, status: { not: 'OUTDATED' } },
+        data: { status: 'OUTDATED' }
+      });
     });
 
     const saved = await this.designs.findById(designId);

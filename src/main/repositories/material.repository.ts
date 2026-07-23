@@ -6,13 +6,21 @@ export class MaterialRepository {
   listActive() {
     return this.db.material.findMany({
       where: { isActive: true },
-      orderBy: [{ category: 'asc' }, { name: 'asc' }],
+      orderBy: [{ category: 'asc' }, { name: 'asc' }]
     });
   }
 
   findById(id: string) {
-    return this.db.material.findUnique({
-      where: { id },
+    return this.db.material.findUnique({ where: { id } });
+  }
+
+  findThinBackMaterials() {
+    return this.db.material.findMany({
+      where: {
+        isActive: true,
+        thicknessMm: { lte: 6 }
+      },
+      orderBy: { thicknessMm: 'asc' }
     });
   }
 
@@ -21,9 +29,6 @@ export class MaterialRepository {
   }
 
   update(id: string, data: Prisma.MaterialUpdateInput) {
-    return this.db.material.update({
-      where: { id },
-      data,
-    });
+    return this.db.material.update({ where: { id }, data });
   }
 }

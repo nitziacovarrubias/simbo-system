@@ -174,6 +174,15 @@ async function main(): Promise<void> {
         colorHex: '#222222'
       },
       {
+        code: 'MDF-TRASERA-3',
+        name: 'MDF Trasera 3mm',
+        category: 'Madera',
+        unit: 'SHEET',
+        cost: 290,
+        thicknessMm: 3,
+        colorHex: '#E8E3DA'
+      },
+      {
         code: 'MADERA-NATURAL',
         name: 'Madera Natural',
         category: 'Madera',
@@ -401,6 +410,8 @@ async function main(): Promise<void> {
       generatedById: supervisor.id,
       version: 1,
       status: 'PENDING_VALIDATION',
+      designVersion: design.version,
+      generatedAt: new Date(),
       notes: 'Lista generada con piezas iniciales para revisión.'
     }
   });
@@ -410,40 +421,52 @@ async function main(): Promise<void> {
       {
         cuttingListId: cuttingList.id,
         materialId: whiteMdf.id,
-        name: 'Lateral gabinete bajo',
+        sourceModuleName: 'Gabinete bajo',
+        pieceName: 'Lateral gabinete bajo',
+        category: 'Estructura',
+        materialName: whiteMdf.name,
         widthMm: 550,
         heightMm: 700,
         thicknessMm: 15,
         quantity: 8,
         grainDirection: 'VERTICAL',
-        edgeBanding: '2 cantos visibles',
+        edgeBanding: 'VISIBLE_EDGES',
         comments: 'Vertical, lado visible del mueble',
+        isManual: false,
         sortOrder: 1
       },
       {
         cuttingListId: cuttingList.id,
         materialId: whiteMdf.id,
-        name: 'Base gabinete bajo',
+        sourceModuleName: 'Gabinete bajo',
+        pieceName: 'Base gabinete bajo',
+        category: 'Estructura',
+        materialName: whiteMdf.name,
         widthMm: 550,
         heightMm: 564,
         thicknessMm: 15,
         quantity: 4,
         grainDirection: 'NONE',
-        edgeBanding: 'Sin cantear',
+        edgeBanding: 'NONE',
         comments: 'Interno, no visible',
+        isManual: false,
         sortOrder: 2
       },
       {
         cuttingListId: cuttingList.id,
         materialId: whiteMdf.id,
-        name: 'Puerta de gabinete',
+        sourceModuleName: 'Gabinete bajo',
+        pieceName: 'Puerta de gabinete',
+        category: 'Frente',
+        materialName: whiteMdf.name,
         widthMm: 450,
         heightMm: 700,
         thicknessMm: 15,
         quantity: 10,
         grainDirection: 'VERTICAL',
-        edgeBanding: '4 cantos',
+        edgeBanding: 'ALL',
         comments: 'Puerta abatible estándar',
+        isManual: false,
         sortOrder: 3
       }
     ]

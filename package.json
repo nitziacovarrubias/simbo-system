@@ -26,6 +26,7 @@
     "@tanstack/react-query": "^5.51.0",
     "@types/three": "^0.169.0",
     "dotenv": "^17.4.2",
+    "exceljs": "^4.4.0",
     "lucide-react": "^0.468.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",

@@ -11,6 +11,7 @@ import { ProjectDetailPage } from '@renderer/modules/projects/ProjectDetailPage'
 import { ProjectsPage } from '@renderer/modules/projects/ProjectsPage';
 import { PlaceholderPage } from '@renderer/modules/placeholder/PlaceholderPage';
 import { DesignEditorPage } from '@renderer/modules/design-editor/DesignEditorPage';
+import { CuttingListPage } from '@renderer/modules/cutting-list/CuttingListPage';
 import { appRoutes } from '@renderer/routes/app-routes';
 import { useSessionStore } from '@renderer/stores/session.store';
 import type { UserRole } from '@shared/constants/roles';
@@ -60,9 +61,10 @@ export function App(): JSX.Element {
   const clientsRoute = appRoutes.find((route) => route.path === '/clients');
   const projectsRoute = appRoutes.find((route) => route.path === '/projects');
   const designRoute = appRoutes.find((route) => route.path === '/design-editor');
+  const cuttingListRoute = appRoutes.find((route) => route.path === '/cutting-list');
   const placeholderRoutes = appRoutes.filter(
     (route) =>
-      route.path !== '/clients' && route.path !== '/projects' && route.path !== '/design-editor'
+      route.path !== '/clients' && route.path !== '/projects' && route.path !== '/design-editor' && route.path !== '/cutting-list'
   );
 
   return (
@@ -147,6 +149,15 @@ export function App(): JSX.Element {
               }
             />
             <Route path="/design-editor" element={<Navigate to="/projects" replace />} />
+            <Route
+              path="/projects/:projectId/cutting-list"
+              element={
+                <RequireRole allowedRoles={cuttingListRoute?.allowedRoles ?? []}>
+                  <CuttingListPage />
+                </RequireRole>
+              }
+            />
+            <Route path="/cutting-list" element={<Navigate to="/projects" replace />} />
 
             {placeholderRoutes.map((route) => (
               <Route

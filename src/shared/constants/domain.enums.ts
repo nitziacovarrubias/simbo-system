@@ -97,6 +97,7 @@ export enum HistoryAction {
   ARCHIVED = 'ARCHIVED',
   COMMENTED = 'COMMENTED',
   DOCUMENT_UPLOADED = 'DOCUMENT_UPLOADED',
+  EXPORTED = 'EXPORTED',
 }
 
 export enum CommentTargetType {
