@@ -1,5 +1,6 @@
 import { registerPersistenceIpcHandlers } from './persistence.ipc';
 import { registerCuttingListIpcHandlers } from './cutting-list.ipc';
+import { registerQuoteIpcHandlers } from './quote.ipc';
 
 let handlersRegistered = false;
 
@@ -10,5 +11,6 @@ export function registerIpcHandlers(): void {
 
   registerPersistenceIpcHandlers();
   registerCuttingListIpcHandlers();
+  registerQuoteIpcHandlers();
   handlersRegistered = true;
 }

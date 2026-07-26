@@ -1,4 +1,4 @@
-import { ArrowLeft, ClipboardList, Edit3, History, MapPin, MoveRight, UserRound } from 'lucide-react';
+import { ArrowLeft, ClipboardList, Edit3, History, MapPin, MoveRight, UserRound, WalletCards } from 'lucide-react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { PROJECT_STATUS_LABEL } from '@renderer/utils/domain-labels';
 import { formatDate, getErrorMessage } from '@renderer/utils/formatters';
@@ -151,6 +151,20 @@ export function ProjectDetailPage(): JSX.Element {
           onClick={() => navigate(`/projects/${project.id}/cutting-list`)}
         >
           Abrir despiece <ClipboardList size={18} aria-hidden="true" />
+        </button>
+      </div>
+
+      <div className="continue-design-card">
+        <div>
+          <h3>Generar cotización</h3>
+          <p>Calcula materiales, mano de obra, costos adicionales, IVA, anticipo y total desde el despiece guardado.</p>
+        </div>
+        <button
+          className="accent-button"
+          type="button"
+          onClick={() => navigate(`/projects/${project.id}/quotes`)}
+        >
+          Abrir cotización <WalletCards size={18} aria-hidden="true" />
         </button>
       </div>
 

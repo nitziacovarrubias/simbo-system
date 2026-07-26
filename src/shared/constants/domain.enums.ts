@@ -52,6 +52,20 @@ export enum QuoteStatus {
   PENDING = 'PENDING',
   APPROVED = 'APPROVED',
   REJECTED = 'REJECTED',
+  OUTDATED = 'OUTDATED',
+}
+
+export enum QuoteItemSourceType {
+  MATERIAL = 'MATERIAL',
+  LABOR = 'LABOR',
+  EXTRA = 'EXTRA',
+  DISCOUNT = 'DISCOUNT',
+  CUSTOM = 'CUSTOM',
+}
+
+export enum Currency {
+  MXN = 'MXN',
+  USD = 'USD',
 }
 
 export enum ActivityStatus {

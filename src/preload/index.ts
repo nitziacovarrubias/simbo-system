@@ -52,8 +52,20 @@ const simboApi: SimboApi = {
     ipcRenderer.invoke(IPC_CHANNELS.rejectCuttingList, cuttingListId, reason),
   exportCuttingListToExcel: (cuttingListId) =>
     ipcRenderer.invoke(IPC_CHANNELS.exportCuttingListToExcel, cuttingListId),
-  listQuotesByProject: (projectId) =>
-    ipcRenderer.invoke(IPC_CHANNELS.listQuotesByProject, projectId),
+  getQuotesByProjectId: (projectId) =>
+    ipcRenderer.invoke(IPC_CHANNELS.getQuotesByProjectId, projectId),
+  getQuoteById: (quoteId) => ipcRenderer.invoke(IPC_CHANNELS.getQuoteById, quoteId),
+  generateQuote: (projectId, cuttingListId) =>
+    ipcRenderer.invoke(IPC_CHANNELS.generateQuote, projectId, cuttingListId),
+  updateQuoteItem: (quoteItemId, input) =>
+    ipcRenderer.invoke(IPC_CHANNELS.updateQuoteItem, quoteItemId, input),
+  addQuoteItem: (quoteId, input) => ipcRenderer.invoke(IPC_CHANNELS.addQuoteItem, quoteId, input),
+  removeQuoteItem: (quoteItemId) => ipcRenderer.invoke(IPC_CHANNELS.removeQuoteItem, quoteItemId),
+  updateQuoteAdjustments: (quoteId, input) =>
+    ipcRenderer.invoke(IPC_CHANNELS.updateQuoteAdjustments, quoteId, input),
+  approveQuote: (quoteId, notes) => ipcRenderer.invoke(IPC_CHANNELS.approveQuote, quoteId, notes),
+  rejectQuote: (quoteId, reason) => ipcRenderer.invoke(IPC_CHANNELS.rejectQuote, quoteId, reason),
+  exportQuoteToExcel: (quoteId) => ipcRenderer.invoke(IPC_CHANNELS.exportQuoteToExcel, quoteId),
   listActivitiesByProject: (projectId) =>
     ipcRenderer.invoke(IPC_CHANNELS.listActivitiesByProject, projectId),
   listAlertsByProject: (projectId) =>

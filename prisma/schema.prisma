@@ -61,6 +61,20 @@ enum QuoteStatus {
   PENDING
   APPROVED
   REJECTED
+  OUTDATED
+}
+
+enum QuoteItemSourceType {
+  MATERIAL
+  LABOR
+  EXTRA
+  DISCOUNT
+  CUSTOM
+}
+
+enum Currency {
+  MXN
+  USD
 }
 
 enum ActivityStatus {
@@ -368,6 +382,7 @@ model CuttingList {
   generatedBy User?          @relation("CuttingListGeneratedBy", fields: [generatedById], references: [id], onDelete: SetNull)
   validatedBy User?          @relation("CuttingListValidatedBy", fields: [validatedById], references: [id], onDelete: SetNull)
   pieces      CuttingPiece[]
+  quotes      Quote[]
 
   @@unique([projectId, version])
   @@index([projectId])
@@ -398,7 +413,8 @@ model CuttingPiece {
   updatedAt        DateTime @updatedAt
 
   cuttingList CuttingList @relation(fields: [cuttingListId], references: [id], onDelete: Cascade)
-  material    Material?   @relation(fields: [materialId], references: [id], onDelete: SetNull)
+  material         Material?   @relation(fields: [materialId], references: [id], onDelete: SetNull)
+  sourceQuoteItems QuoteItem[] @relation("QuoteItemSourcePiece")
 
   @@index([cuttingListId])
   @@index([sourceModuleId])
@@ -406,51 +422,66 @@ model CuttingPiece {
 }
 
 model Quote {
-  id             String      @id @default(cuid())
-  projectId      String
-  createdById    String?
-  version        Int         @default(1)
-  status         QuoteStatus @default(DRAFT)
-  subtotal       Float       @default(0)
-  taxRate        Float       @default(0.16)
-  taxAmount      Float       @default(0)
-  laborCost      Float       @default(0)
-  discountAmount Float       @default(0)
-  advancePayment Float       @default(0)
-  total          Float       @default(0)
-  notes          String?
-  approvedAt     DateTime?
-  rejectedAt     DateTime?
-  createdAt      DateTime    @default(now())
-  updatedAt      DateTime    @updatedAt
+  id                  String      @id @default(cuid())
+  projectId           String
+  cuttingListId       String?
+  createdById         String?
+  version             Int         @default(1)
+  status              QuoteStatus @default(DRAFT)
+  subtotal            Float       @default(0)
+  taxRate             Float       @default(0.16)
+  taxAmount           Float       @default(0)
+  laborCost           Float       @default(0)
+  extraCost           Float       @default(0)
+  discountAmount      Float       @default(0)
+  advancePayment      Float       @default(0)
+  total               Float       @default(0)
+  currency            Currency    @default(MXN)
+  notes               String?
+  clientDecisionNotes String?
+  generatedAt         DateTime    @default(now())
+  approvedAt          DateTime?
+  rejectedAt          DateTime?
+  exportedAt          DateTime?
+  createdAt           DateTime    @default(now())
+  updatedAt           DateTime    @updatedAt
 
-  project   Project     @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  createdBy User?       @relation("QuoteCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
-  items     QuoteItem[]
+  project     Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  cuttingList CuttingList? @relation(fields: [cuttingListId], references: [id], onDelete: SetNull)
+  createdBy   User?        @relation("QuoteCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  items       QuoteItem[]
 
   @@unique([projectId, version])
   @@index([projectId])
+  @@index([cuttingListId])
   @@index([status])
 }
 
 model QuoteItem {
-  id          String   @id @default(cuid())
-  quoteId     String
-  materialId  String?
-  description String
-  quantity    Float
-  unit        String
-  unitPrice   Float
-  total       Float
-  sortOrder   Int      @default(0)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id            String              @id @default(cuid())
+  quoteId       String
+  materialId    String?
+  sourceType    QuoteItemSourceType @default(CUSTOM)
+  sourcePieceId String?
+  description   String
+  quantity      Float
+  unit          String
+  unitPrice     Float
+  amount        Float
+  comments      String?
+  isManual      Boolean             @default(false)
+  sortOrder     Int                 @default(0)
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
 
-  quote    Quote     @relation(fields: [quoteId], references: [id], onDelete: Cascade)
-  material Material? @relation(fields: [materialId], references: [id], onDelete: SetNull)
+  quote       Quote         @relation(fields: [quoteId], references: [id], onDelete: Cascade)
+  material    Material?     @relation(fields: [materialId], references: [id], onDelete: SetNull)
+  sourcePiece CuttingPiece? @relation("QuoteItemSourcePiece", fields: [sourcePieceId], references: [id], onDelete: SetNull)
 
   @@index([quoteId])
   @@index([materialId])
+  @@index([sourcePieceId])
+  @@index([sourceType])
 }
 
 model Activity {

@@ -10,7 +10,6 @@ import type {
   HistoryEntryListItem,
   MaterialListItem,
   ProjectListItem,
-  QuoteListItem,
   RenderListItem,
   UserListItem
 } from './domain.types';
@@ -31,6 +30,13 @@ import type {
   CuttingListSummary,
   CuttingPieceInput
 } from './cutting-list.types';
+import type {
+  QuoteAdjustmentsInput,
+  QuoteDetail,
+  QuoteExportResult,
+  QuoteItemInput,
+  QuoteSummary
+} from './quote.types';
 
 export interface SimboApi {
   getAppInfo: () => Promise<AppInfo>;
@@ -67,7 +73,16 @@ export interface SimboApi {
   authorizeCuttingList: (cuttingListId: string, notes?: string) => Promise<CuttingListDetail>;
   rejectCuttingList: (cuttingListId: string, reason: string) => Promise<CuttingListDetail>;
   exportCuttingListToExcel: (cuttingListId: string) => Promise<CuttingListExportResult>;
-  listQuotesByProject: (projectId: string) => Promise<QuoteListItem[]>;
+  getQuotesByProjectId: (projectId: string) => Promise<QuoteSummary[]>;
+  getQuoteById: (quoteId: string) => Promise<QuoteDetail>;
+  generateQuote: (projectId: string, cuttingListId?: string) => Promise<QuoteDetail>;
+  updateQuoteItem: (quoteItemId: string, input: Partial<QuoteItemInput>) => Promise<QuoteDetail>;
+  addQuoteItem: (quoteId: string, input: QuoteItemInput) => Promise<QuoteDetail>;
+  removeQuoteItem: (quoteItemId: string) => Promise<QuoteDetail>;
+  updateQuoteAdjustments: (quoteId: string, input: QuoteAdjustmentsInput) => Promise<QuoteDetail>;
+  approveQuote: (quoteId: string, notes?: string) => Promise<QuoteDetail>;
+  rejectQuote: (quoteId: string, reason: string) => Promise<QuoteDetail>;
+  exportQuoteToExcel: (quoteId: string) => Promise<QuoteExportResult>;
   listActivitiesByProject: (projectId: string) => Promise<ActivityListItem[]>;
   listAlertsByProject: (projectId: string) => Promise<AlertListItem[]>;
   listDocumentsByProject: (projectId: string) => Promise<DocumentListItem[]>;

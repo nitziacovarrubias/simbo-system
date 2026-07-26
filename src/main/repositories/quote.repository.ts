@@ -1,4 +1,31 @@
-import type { Prisma, PrismaClient, QuoteStatus } from '@prisma/client';
+import type {
+  Prisma,
+  PrismaClient,
+  QuoteStatus,
+  QuoteItemSourceType
+} from '@prisma/client';
+
+export const quoteDetailInclude = {
+  project: {
+    include: {
+      client: { include: { person: true } }
+    }
+  },
+  cuttingList: {
+    include: { design: true }
+  },
+  items: {
+    include: {
+      material: true,
+      sourcePiece: true
+    },
+    orderBy: [{ sortOrder: 'asc' }, { createdAt: 'asc' }]
+  }
+} satisfies Prisma.QuoteInclude;
+
+export type QuoteDetailRecord = Prisma.QuoteGetPayload<{
+  include: typeof quoteDetailInclude;
+}>;
 
 export class QuoteRepository {
   constructor(private readonly db: PrismaClient) {}
@@ -6,35 +33,106 @@ export class QuoteRepository {
   listByProject(projectId: string) {
     return this.db.quote.findMany({
       where: { projectId },
-      include: { items: true },
-      orderBy: { version: 'desc' },
+      include: {
+        cuttingList: {
+          select: {
+            id: true,
+            version: true,
+            status: true,
+            updatedAt: true
+          }
+        },
+        _count: { select: { items: true } }
+      },
+      orderBy: { version: 'desc' }
     });
   }
 
-  findLatestByProject(projectId: string) {
+  findById(id: string) {
+    return this.db.quote.findUnique({
+      where: { id },
+      include: quoteDetailInclude
+    });
+  }
+
+  findLatestVersion(projectId: string) {
     return this.db.quote.findFirst({
       where: { projectId },
-      include: { items: true },
       orderBy: { version: 'desc' },
+      select: { version: true }
     });
   }
 
   create(data: Prisma.QuoteCreateInput) {
     return this.db.quote.create({
       data,
-      include: { items: true },
+      include: quoteDetailInclude
     });
   }
 
-  updateStatus(id: string, status: QuoteStatus, notes?: string) {
+  findItemById(id: string) {
+    return this.db.quoteItem.findUnique({
+      where: { id },
+      include: { quote: true }
+    });
+  }
+
+  updateItem(id: string, data: Prisma.QuoteItemUncheckedUpdateInput) {
+    return this.db.quoteItem.update({ where: { id }, data });
+  }
+
+  addItem(data: Prisma.QuoteItemUncheckedCreateInput) {
+    return this.db.quoteItem.create({ data });
+  }
+
+  removeItem(id: string) {
+    return this.db.quoteItem.delete({ where: { id } });
+  }
+
+  updateQuote(id: string, data: Prisma.QuoteUpdateInput) {
+    return this.db.quote.update({ where: { id }, data });
+  }
+
+  updateStatus(id: string, status: QuoteStatus, decisionNotes: string) {
     return this.db.quote.update({
       where: { id },
       data: {
         status,
-        notes,
-        approvedAt: status === 'APPROVED' ? new Date() : undefined,
-        rejectedAt: status === 'REJECTED' ? new Date() : undefined,
-      },
+        clientDecisionNotes: decisionNotes || null,
+        approvedAt: status === 'APPROVED' ? new Date() : null,
+        rejectedAt: status === 'REJECTED' ? new Date() : null
+      }
     });
+  }
+
+  markByCuttingListOutdated(cuttingListId: string) {
+    return this.db.quote.updateMany({
+      where: {
+        cuttingListId,
+        status: { not: 'OUTDATED' }
+      },
+      data: { status: 'OUTDATED' }
+    });
+  }
+
+  markProjectQuotesOutdated(projectId: string) {
+    return this.db.quote.updateMany({
+      where: {
+        projectId,
+        status: { not: 'OUTDATED' }
+      },
+      data: { status: 'OUTDATED' }
+    });
+  }
+
+  updateExportedAt(id: string, exportedAt: Date) {
+    return this.db.quote.update({
+      where: { id },
+      data: { exportedAt }
+    });
+  }
+
+  countItemsByType(quoteId: string, sourceType: QuoteItemSourceType) {
+    return this.db.quoteItem.count({ where: { quoteId, sourceType } });
   }
 }

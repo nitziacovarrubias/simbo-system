@@ -9,7 +9,6 @@ import { ProjectService } from '../services/project.service';
 import { DesignService } from '../services/design.service';
 import { MaterialService } from '../services/material.service';
 import { RenderService } from '../services/render.service';
-import { QuoteService } from '../services/quote.service';
 import { ScheduleService } from '../services/schedule.service';
 import { AlertService } from '../services/alert.service';
 import { DocumentService } from '../services/document.service';
@@ -55,7 +54,6 @@ export function registerPersistenceIpcHandlers(): void {
   const designService = new DesignService();
   const materialService = new MaterialService();
   const renderService = new RenderService();
-  const quoteService = new QuoteService();
   const scheduleService = new ScheduleService();
   const alertService = new AlertService();
   const documentService = new DocumentService();
@@ -128,11 +126,6 @@ export function registerPersistenceIpcHandlers(): void {
   registerSafeHandler(IPC_CHANNELS.listRendersByProject, (projectId: string) => {
     const validProjectId = idOnlySchema.parse(projectId);
     return renderService.listRendersByProject(validProjectId);
-  });
-
-  registerSafeHandler(IPC_CHANNELS.listQuotesByProject, (projectId: string) => {
-    const validProjectId = idOnlySchema.parse(projectId);
-    return quoteService.listQuotesByProject(validProjectId);
   });
 
   registerSafeHandler(IPC_CHANNELS.listActivitiesByProject, (projectId: string) => {

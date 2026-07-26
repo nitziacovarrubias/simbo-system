@@ -9,37 +9,6 @@ npm install @prisma/client zod dotenv
 npm install -D prisma tsx
 ```
 
-## Scripts recomendados para package.json
-
-```json
-{
-  "scripts": {
-    "db:generate": "prisma generate",
-    "db:migrate": "prisma migrate dev",
-    "db:seed": "prisma db seed",
-    "db:studio": "prisma studio",
-    "db:reset": "prisma migrate reset"
-  },
-  "prisma": {
-    "seed": "tsx prisma/seed.ts"
-  }
-}
-```
-
-## Configuración
-
-Copia `.env.example` a `.env`:
-
-```bash
-cp .env.example .env
-```
-
-En Windows PowerShell:
-
-```powershell
-Copy-Item .env.example .env
-```
-
 ## Crear base de datos
 
 ```bash
@@ -66,16 +35,6 @@ app.whenReady().then(() => {
   registerIpcHandlers();
   createWindow();
 });
-```
-
-## Probar desde React
-
-Puedes usar `DatabaseStatusCard` temporalmente en Settings o Dashboard:
-
-```tsx
-import { DatabaseStatusCard } from './modules/settings/DatabaseStatusCard';
-
-<DatabaseStatusCard />
 ```
 
 ## APIs expuestas por preload

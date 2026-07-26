@@ -1818,3 +1818,359 @@ select:disabled {
   color: #6b3d00;
   background: #ffe4b8;
 }
+
+/* Cotizaciones */
+.quotes-page {
+  display: grid;
+  gap: 22px;
+}
+
+.quote-header {
+  align-items: flex-end;
+}
+
+.quote-subtitle,
+.quote-source-label {
+  margin: 8px 0 0;
+  color: var(--color-text-soft);
+}
+
+.quote-source-label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-weight: 800;
+}
+
+.quote-version-bar,
+.quote-meta-grid,
+.quote-summary-panel,
+.quote-actions-card,
+.quote-decision-note {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-white);
+  box-shadow: 0 8px 22px rgba(41, 50, 65, 0.07);
+}
+
+.quote-version-bar {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 18px;
+}
+
+.quote-version-selector {
+  display: grid;
+  gap: 7px;
+  min-width: 290px;
+  color: var(--color-text);
+  font-weight: 800;
+}
+
+.quote-version-selector select,
+.quote-item-form input,
+.quote-item-form select,
+.quote-item-form textarea,
+.quote-summary-fields input,
+.quote-summary-fields select,
+.quote-summary-fields textarea,
+.quote-actions-card textarea {
+  width: 100%;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  background: var(--color-white);
+  color: var(--color-text);
+  padding: 10px 12px;
+  font: inherit;
+}
+
+.empty-quote-state {
+  min-height: 250px;
+  display: grid;
+  place-content: center;
+  text-align: center;
+  border: 2px dashed var(--color-border);
+  border-radius: var(--radius-lg);
+  background: #fafbfc;
+  padding: 32px;
+}
+
+.quote-meta-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px;
+  overflow: hidden;
+}
+
+.quote-meta-grid > div {
+  display: grid;
+  gap: 7px;
+  padding: 18px;
+  background: #fbfcfd;
+}
+
+.quote-meta-grid span {
+  color: var(--color-text-soft);
+  font-size: 0.84rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.quote-decision-note {
+  padding: 16px 18px;
+}
+
+.quote-decision-note p {
+  margin: 8px 0 0;
+  color: var(--color-text-soft);
+}
+
+.quote-content-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 330px;
+  gap: 20px;
+  align-items: start;
+}
+
+.quote-concepts-column {
+  min-width: 0;
+}
+
+.quote-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-white);
+}
+
+.quote-item-table {
+  width: 100%;
+  min-width: 1120px;
+  border-collapse: collapse;
+}
+
+.quote-item-table th,
+.quote-item-table td {
+  border-bottom: 1px solid var(--color-border);
+  border-right: 1px solid #e8ecef;
+  padding: 11px 12px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.quote-item-table th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--color-accent);
+  color: var(--color-white);
+  font-size: 0.84rem;
+}
+
+.quote-item-table tbody tr:nth-child(even) {
+  background: #f7f9fa;
+}
+
+.quote-summary-panel {
+  position: sticky;
+  top: 18px;
+  display: grid;
+  gap: 18px;
+  padding: 20px;
+}
+
+.quote-summary-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: start;
+}
+
+.quote-summary-heading h3 {
+  margin: 0;
+}
+
+.quote-summary-heading > strong {
+  color: var(--color-accent);
+  font-size: 1.2rem;
+}
+
+.quote-summary-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.quote-summary-fields label,
+.quote-actions-card label,
+.quote-item-form label {
+  display: grid;
+  gap: 7px;
+  color: var(--color-text);
+  font-weight: 800;
+}
+
+.quote-summary-fields .full-width {
+  grid-column: 1 / -1;
+}
+
+.quote-total-list {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  border-top: 1px solid var(--color-border);
+}
+
+.quote-total-list > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.quote-total-list dt {
+  color: var(--color-text-soft);
+  font-weight: 800;
+}
+
+.quote-total-list dd {
+  margin: 0;
+  font-weight: 900;
+}
+
+.quote-total-list .quote-grand-total {
+  color: var(--color-primary);
+  background: #fff3eb;
+  margin: 0 -10px;
+  padding: 12px 10px;
+}
+
+.quote-save-button {
+  width: 100%;
+}
+
+.quote-actions-card {
+  display: grid;
+  gap: 16px;
+  padding: 18px;
+}
+
+.quote-action-buttons,
+.quote-form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.success-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 42px;
+  border: 1px solid #18864b;
+  border-radius: 10px;
+  background: #18864b;
+  color: var(--color-white);
+  padding: 10px 16px;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.success-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.quote-form-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  overflow-y: auto;
+  padding: 28px;
+  background: rgba(29, 37, 48, 0.62);
+}
+
+.quote-item-form {
+  width: min(820px, 100%);
+  border-radius: var(--radius-lg);
+  background: var(--color-white);
+  box-shadow: var(--shadow-card);
+  padding: 24px;
+}
+
+.quote-item-form header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.quote-item-form h3 {
+  margin: 0;
+}
+
+.quote-form-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.quote-form-grid .full-width {
+  grid-column: 1 / -1;
+}
+
+.quote-form-actions {
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.status-pending {
+  color: #7a4b00;
+  background: #fff0cf;
+}
+
+.status-approved {
+  color: #0f6532;
+  background: #ddf4e7;
+}
+
+@media (max-width: 1150px) {
+  .quote-content-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .quote-summary-panel {
+    position: static;
+  }
+}
+
+@media (max-width: 760px) {
+  .quote-header,
+  .quote-version-bar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .quote-version-selector {
+    min-width: 0;
+  }
+
+  .quote-meta-grid,
+  .quote-form-grid,
+  .quote-summary-fields {
+    grid-template-columns: 1fr;
+  }
+
+  .quote-summary-fields .full-width,
+  .quote-form-grid .full-width {
+    grid-column: auto;
+  }
+}

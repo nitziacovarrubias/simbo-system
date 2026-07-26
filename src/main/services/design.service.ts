@@ -92,6 +92,10 @@ export class DesignService {
       where: { projectId, status: { not: 'OUTDATED' } },
       data: { status: 'OUTDATED' }
     });
+    await prisma.quote.updateMany({
+      where: { projectId, status: { not: 'OUTDATED' } },
+      data: { status: 'OUTDATED' }
+    });
     const design = await this.designs.create({
       project: { connect: { id: projectId } },
       title: input.title,
@@ -117,6 +121,10 @@ export class DesignService {
         ...metadata,
         viewMode: input.viewMode ?? metadata.viewMode ?? '3D'
       })
+    });
+    await prisma.quote.updateMany({
+      where: { projectId: current.projectId, status: { not: 'OUTDATED' } },
+      data: { status: 'OUTDATED' }
     });
     return mapDesign(design);
   }
@@ -155,6 +163,10 @@ export class DesignService {
       await tx.design.update({ where: { id: designId }, data: { updatedAt: new Date() } });
       await tx.cuttingList.updateMany({
         where: { designId, status: { not: 'OUTDATED' } },
+        data: { status: 'OUTDATED' }
+      });
+      await tx.quote.updateMany({
+        where: { projectId: design.projectId, status: { not: 'OUTDATED' } },
         data: { status: 'OUTDATED' }
       });
     });

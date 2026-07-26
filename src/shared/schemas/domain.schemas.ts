@@ -12,6 +12,8 @@ import {
   HistoryAction,
   MaterialUnit,
   QuoteStatus,
+  QuoteItemSourceType,
+  Currency,
   RenderStatus,
   UserRole
 } from '../constants/domain.enums';
@@ -175,17 +177,22 @@ export const quoteItemSchema = z.object({
   id: idSchema.optional(),
   quoteId: idSchema.optional(),
   materialId: optionalIdSchema,
-  description: z.string().min(2),
+  sourceType: z.nativeEnum(QuoteItemSourceType).default(QuoteItemSourceType.CUSTOM),
+  sourcePieceId: optionalIdSchema,
+  description: z.string().min(1),
   quantity: z.number().positive(),
   unit: z.string().min(1),
   unitPrice: moneySchema,
-  total: moneySchema,
+  amount: moneySchema,
+  comments: z.string().optional().nullable(),
+  isManual: z.boolean().default(false),
   sortOrder: z.number().int().min(0).default(0)
 });
 
 export const quoteSchema = z.object({
   id: idSchema.optional(),
   projectId: idSchema,
+  cuttingListId: optionalIdSchema,
   createdById: optionalIdSchema,
   version: z.number().int().positive().default(1),
   status: z.nativeEnum(QuoteStatus).default(QuoteStatus.DRAFT),
@@ -193,10 +200,13 @@ export const quoteSchema = z.object({
   taxRate: z.number().min(0).max(1).default(0.16),
   taxAmount: moneySchema.default(0),
   laborCost: moneySchema.default(0),
+  extraCost: moneySchema.default(0),
   discountAmount: moneySchema.default(0),
   advancePayment: moneySchema.default(0),
   total: moneySchema.default(0),
+  currency: z.nativeEnum(Currency).default(Currency.MXN),
   notes: z.string().optional().nullable(),
+  clientDecisionNotes: z.string().optional().nullable(),
   items: z.array(quoteItemSchema).default([])
 });
 

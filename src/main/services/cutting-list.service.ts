@@ -199,6 +199,11 @@ export class CuttingListService {
       }
     });
 
+    await prisma.quote.updateMany({
+      where: { projectId, status: { not: 'OUTDATED' } },
+      data: { status: 'OUTDATED' }
+    });
+
     await this.history.create({
       project: { connect: { id: projectId } },
       action: version === 1 ? 'CREATED' : 'UPDATED',
@@ -226,6 +231,10 @@ export class CuttingListService {
       validationNotes: null,
       rejectedAt: null
     });
+    await prisma.quote.updateMany({
+      where: { cuttingListId: current.cuttingListId, status: { not: 'OUTDATED' } },
+      data: { status: 'OUTDATED' }
+    });
     await this.history.create({
       project: { connect: { id: current.cuttingList.projectId } },
       action: 'UPDATED',
@@ -252,6 +261,10 @@ export class CuttingListService {
       validationNotes: null,
       rejectedAt: null
     });
+    await prisma.quote.updateMany({
+      where: { cuttingListId, status: { not: 'OUTDATED' } },
+      data: { status: 'OUTDATED' }
+    });
     await this.history.create({
       project: { connect: { id: list.projectId } },
       action: 'CREATED',
@@ -271,6 +284,10 @@ export class CuttingListService {
       status: 'PENDING_VALIDATION',
       validationNotes: null,
       rejectedAt: null
+    });
+    await prisma.quote.updateMany({
+      where: { cuttingListId: current.cuttingListId, status: { not: 'OUTDATED' } },
+      data: { status: 'OUTDATED' }
     });
     await this.history.create({
       project: { connect: { id: current.cuttingList.projectId } },
@@ -303,6 +320,10 @@ export class CuttingListService {
     const list = await this.getCuttingListById(cuttingListId);
     const validReason = validateRejectReason(reason);
     await this.cuttingLists.updateStatus(cuttingListId, 'REJECTED', validReason);
+    await prisma.quote.updateMany({
+      where: { cuttingListId, status: { not: 'OUTDATED' } },
+      data: { status: 'OUTDATED' }
+    });
     await this.history.create({
       project: { connect: { id: list.projectId } },
       action: 'REJECTED',

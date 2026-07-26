@@ -64,7 +64,7 @@ export const appRoutes: AppRoute[] = [
   {
     path: '/quotations',
     title: 'Cotizaciones',
-    description: 'Módulo futuro para cotizaciones, costos, IVA, anticipos y totales.',
+    description: 'Generación automática, edición, versionado, aprobación y exportación de cotizaciones.',
     Icon: WalletCards,
     allowedRoles: [UserRole.SUPERVISOR],
     moduleKey: 'quotations'

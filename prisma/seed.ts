@@ -472,7 +472,7 @@ async function main(): Promise<void> {
     ]
   });
 
-  const quoteSubtotal = 18500;
+  const quoteSubtotal = 18490;
   const laborCost = 6500;
   const taxAmount = (quoteSubtotal + laborCost) * 0.16;
   const total = quoteSubtotal + laborCost + taxAmount;
@@ -480,11 +480,13 @@ async function main(): Promise<void> {
   const quote = await prisma.quote.create({
     data: {
       projectId: project.id,
+      cuttingListId: cuttingList.id,
       createdById: supervisor.id,
       version: 1,
       status: 'PENDING',
       subtotal: quoteSubtotal,
       laborCost,
+      extraCost: 0,
       taxRate: 0.16,
       taxAmount,
       advancePayment: total * 0.5,
@@ -498,31 +500,37 @@ async function main(): Promise<void> {
       {
         quoteId: quote.id,
         materialId: whiteMdf.id,
+        sourceType: 'MATERIAL',
         description: 'MDF blanco mate para gabinetes',
         quantity: 8,
         unit: 'Hoja',
         unitPrice: 780,
-        total: 6240,
+        amount: 6240,
+        comments: 'Concepto inicial de materiales.',
         sortOrder: 1
       },
       {
         quoteId: quote.id,
         materialId: blackGranite.id,
+        sourceType: 'MATERIAL',
         description: 'Cubierta negra para isla y encimera',
         quantity: 4.2,
         unit: 'm2',
         unitPrice: 1650,
-        total: 6930,
+        amount: 6930,
+        comments: 'Área estimada de cubierta.',
         sortOrder: 2
       },
       {
         quoteId: quote.id,
         materialId: hardware.id,
+        sourceType: 'MATERIAL',
         description: 'Herrajes, bisagras y jaladeras',
         quantity: 56,
         unit: 'Pieza',
         unitPrice: 95,
-        total: 5320,
+        amount: 5320,
+        comments: 'Herrajes estándar del proyecto.',
         sortOrder: 3
       }
     ]
@@ -630,6 +638,15 @@ async function main(): Promise<void> {
         entityId: cuttingList.id,
         title: 'Despiece generado',
         description: 'Se generó la primera lista de despiece pendiente de validación.'
+      },
+      {
+        projectId: project.id,
+        userId: supervisor.id,
+        action: 'CREATED',
+        entityType: 'Quote',
+        entityId: quote.id,
+        title: 'Cotización generada',
+        description: 'Se generó la primera cotización pendiente de aprobación.'
       }
     ]
   });

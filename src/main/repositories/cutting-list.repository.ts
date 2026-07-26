@@ -31,6 +31,23 @@ export class CuttingListRepository {
     });
   }
 
+
+  findLatestAuthorized(projectId: string) {
+    return this.db.cuttingList.findFirst({
+      where: { projectId, status: 'AUTHORIZED' },
+      include: cuttingListDetailInclude,
+      orderBy: { version: 'desc' }
+    });
+  }
+
+  findLatestPendingValidation(projectId: string) {
+    return this.db.cuttingList.findFirst({
+      where: { projectId, status: 'PENDING_VALIDATION' },
+      include: cuttingListDetailInclude,
+      orderBy: { version: 'desc' }
+    });
+  }
+
   findById(id: string) {
     return this.db.cuttingList.findUnique({
       where: { id },
