@@ -3,8 +3,6 @@ import { clientSchema } from './client.schema';
 import { projectSchema } from './project.schema';
 import { roomOpeningSchema, roomSpaceSchema } from './room-space.schema';
 import {
-  ActivityStatus,
-  AlertPriority,
   CommentTargetType,
   CuttingListStatus,
   DesignStatus,
@@ -210,32 +208,6 @@ export const quoteSchema = z.object({
   items: z.array(quoteItemSchema).default([])
 });
 
-export const activitySchema = z.object({
-  id: idSchema.optional(),
-  projectId: idSchema,
-  assignedToId: optionalIdSchema,
-  title: z.string().min(2),
-  description: z.string().optional().nullable(),
-  stage: z.string().optional().nullable(),
-  status: z.nativeEnum(ActivityStatus).default(ActivityStatus.PENDING),
-  priority: z.nativeEnum(AlertPriority).default(AlertPriority.MEDIUM),
-  startDate: isoDateSchema,
-  dueDate: isoDateSchema,
-  completedAt: isoDateSchema
-});
-
-export const alertSchema = z.object({
-  id: idSchema.optional(),
-  projectId: optionalIdSchema,
-  activityId: optionalIdSchema,
-  createdById: optionalIdSchema,
-  title: z.string().min(2),
-  message: z.string().min(5),
-  priority: z.nativeEnum(AlertPriority).default(AlertPriority.MEDIUM),
-  isRead: z.boolean().default(false),
-  resolvedAt: isoDateSchema
-});
-
 export const documentSchema = z.object({
   id: idSchema.optional(),
   projectId: idSchema,
@@ -291,7 +263,5 @@ export type RenderInput = z.infer<typeof renderSchema>;
 export type CuttingListInput = z.infer<typeof cuttingListSchema>;
 export type CuttingPieceInput = z.infer<typeof cuttingPieceSchema>;
 export type QuoteInput = z.infer<typeof quoteSchema>;
-export type ActivityInput = z.infer<typeof activitySchema>;
-export type AlertInput = z.infer<typeof alertSchema>;
 export type DocumentInput = z.infer<typeof documentSchema>;
 export type HistoryEntryInput = z.infer<typeof historyEntrySchema>;

@@ -66,10 +66,30 @@ const simboApi: SimboApi = {
   approveQuote: (quoteId, notes) => ipcRenderer.invoke(IPC_CHANNELS.approveQuote, quoteId, notes),
   rejectQuote: (quoteId, reason) => ipcRenderer.invoke(IPC_CHANNELS.rejectQuote, quoteId, reason),
   exportQuoteToExcel: (quoteId) => ipcRenderer.invoke(IPC_CHANNELS.exportQuoteToExcel, quoteId),
-  listActivitiesByProject: (projectId) =>
-    ipcRenderer.invoke(IPC_CHANNELS.listActivitiesByProject, projectId),
-  listAlertsByProject: (projectId) =>
-    ipcRenderer.invoke(IPC_CHANNELS.listAlertsByProject, projectId),
+  getScheduleByProjectId: (projectId) =>
+    ipcRenderer.invoke(IPC_CHANNELS.getScheduleByProjectId, projectId),
+  createActivity: (projectId, input) =>
+    ipcRenderer.invoke(IPC_CHANNELS.createActivity, projectId, input),
+  updateActivity: (activityId, input) =>
+    ipcRenderer.invoke(IPC_CHANNELS.updateActivity, activityId, input),
+  deleteActivity: (activityId) => ipcRenderer.invoke(IPC_CHANNELS.deleteActivity, activityId),
+  generateProjectAlerts: (projectId) =>
+    ipcRenderer.invoke(IPC_CHANNELS.generateProjectAlerts, projectId),
+  getAlertsByProjectId: (projectId) =>
+    ipcRenderer.invoke(IPC_CHANNELS.getAlertsByProjectId, projectId),
+  getAllAlerts: () => ipcRenderer.invoke(IPC_CHANNELS.getAllAlerts),
+  createIncidentAlert: (projectId, input) =>
+    ipcRenderer.invoke(IPC_CHANNELS.createIncidentAlert, projectId, input),
+  resolveAlert: (alertId, notes) =>
+    ipcRenderer.invoke(IPC_CHANNELS.resolveAlert, alertId, notes),
+  dismissAlert: (alertId, notes) =>
+    ipcRenderer.invoke(IPC_CHANNELS.dismissAlert, alertId, notes),
+  getProjectProgressReport: (projectId) =>
+    ipcRenderer.invoke(IPC_CHANNELS.getProjectProgressReport, projectId),
+  closeProject: (projectId, input) =>
+    ipcRenderer.invoke(IPC_CHANNELS.closeProject, projectId, input),
+  archiveProject: (projectId, input) =>
+    ipcRenderer.invoke(IPC_CHANNELS.archiveProject, projectId, input),
   listDocumentsByProject: (projectId) =>
     ipcRenderer.invoke(IPC_CHANNELS.listDocumentsByProject, projectId),
   listHistoryByProject: (projectId) =>

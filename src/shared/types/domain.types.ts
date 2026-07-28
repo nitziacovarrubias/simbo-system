@@ -1,4 +1,5 @@
 import type {
+  ActivityPriority,
   ActivityStatus,
   AlertPriority,
   ClientStatus,
@@ -34,6 +35,10 @@ export interface DashboardSummary {
   pendingCuttingListsCount: number;
   openAlertsCount: number;
   upcomingActivitiesCount: number;
+  pendingActivitiesCount: number;
+  overdueProjectsCount: number;
+  productionProjectsCount: number;
+  closedProjectsCount: number;
 }
 
 export interface PersonSummary {
@@ -141,7 +146,7 @@ export interface ActivityListItem {
   title: string;
   stage: string | null;
   status: ActivityStatus;
-  priority: AlertPriority;
+  priority: ActivityPriority;
   assignedToName: string | null;
   startDate: string | null;
   dueDate: string | null;

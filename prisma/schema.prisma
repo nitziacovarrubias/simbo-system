@@ -77,12 +77,40 @@ enum Currency {
   USD
 }
 
+enum ActivityStage {
+  DESIGN_REVIEW
+  QUOTATION
+  CUTTING
+  PRODUCTION
+  INSTALLATION
+  DELIVERY
+  CLOSURE
+  CUSTOM
+}
+
 enum ActivityStatus {
-  PENDING
+  TODO
   IN_PROGRESS
-  DONE
   BLOCKED
-  CANCELED
+  DONE
+  CANCELLED
+}
+
+enum ActivityPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum AlertType {
+  DUE_SOON
+  OVERDUE
+  BLOCKED_ACTIVITY
+  INCIDENT
+  QUOTE_OUTDATED
+  CUTTING_LIST_OUTDATED
+  CUSTOM
 }
 
 enum AlertPriority {
@@ -90,6 +118,13 @@ enum AlertPriority {
   MEDIUM
   HIGH
   URGENT
+}
+
+enum AlertStatus {
+  OPEN
+  IN_REVIEW
+  RESOLVED
+  DISMISSED
 }
 
 enum DocumentType {
@@ -485,51 +520,59 @@ model QuoteItem {
 }
 
 model Activity {
-  id             String         @id @default(cuid())
-  projectId      String
-  assignedToId   String?
-  title          String
-  description    String?
-  stage          String?
-  status         ActivityStatus @default(PENDING)
-  priority       AlertPriority  @default(MEDIUM)
-  startDate      DateTime?
-  dueDate        DateTime?
-  completedAt    DateTime?
-  createdAt      DateTime       @default(now())
-  updatedAt      DateTime       @updatedAt
+  id                 String           @id @default(cuid())
+  projectId          String
+  assignedUserId     String?
+  assignedPersonName String?
+  title              String
+  description        String?
+  stage              ActivityStage    @default(CUSTOM)
+  startDate          DateTime
+  dueDate            DateTime
+  completedAt        DateTime?
+  status             ActivityStatus   @default(TODO)
+  priority           ActivityPriority @default(MEDIUM)
+  progressPercent    Int              @default(0)
+  notes              String?
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
 
-  project    Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  assignedTo User?   @relation("ActivityAssignee", fields: [assignedToId], references: [id], onDelete: SetNull)
-  alerts     Alert[]
+  project      Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  assignedUser User?   @relation("ActivityAssignee", fields: [assignedUserId], references: [id], onDelete: SetNull)
+  alerts       Alert[]
 
   @@index([projectId])
-  @@index([assignedToId])
+  @@index([assignedUserId])
   @@index([status])
+  @@index([priority])
   @@index([dueDate])
 }
 
 model Alert {
-  id          String        @id @default(cuid())
-  projectId   String?
-  activityId  String?
-  createdById String?
-  title       String
-  message     String
-  priority    AlertPriority @default(MEDIUM)
-  isRead      Boolean       @default(false)
-  resolvedAt  DateTime?
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
+  id              String        @id @default(cuid())
+  projectId       String
+  activityId      String?
+  createdById     String?
+  title           String
+  description     String
+  type            AlertType
+  priority        AlertPriority @default(MEDIUM)
+  status          AlertStatus   @default(OPEN)
+  dueDate         DateTime?
+  resolvedAt      DateTime?
+  resolutionNotes String?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
 
-  project   Project?  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  project   Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
   activity  Activity? @relation(fields: [activityId], references: [id], onDelete: SetNull)
   createdBy User?     @relation("AlertCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
 
   @@index([projectId])
+  @@index([activityId, type, status])
   @@index([priority])
-  @@index([isRead])
-  @@index([resolvedAt])
+  @@index([status])
+  @@index([dueDate])
 }
 
 model Document {

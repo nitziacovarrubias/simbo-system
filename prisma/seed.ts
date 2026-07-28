@@ -311,7 +311,7 @@ async function main(): Promise<void> {
       name: 'Cocina paneles blancos isla oscura',
       description: 'Cocina residencial completa con isla, alacenas y cubierta negra.',
       location: 'San Carlos, Sonora',
-      status: 'DESIGN',
+      status: 'PRODUCTION',
       startDate: new Date('2025-04-15T09:00:00.000Z'),
       deliveryDate: new Date('2025-05-12T18:00:00.000Z'),
       roomSpaceJson: JSON.stringify(roomSpace)
@@ -483,7 +483,8 @@ async function main(): Promise<void> {
       cuttingListId: cuttingList.id,
       createdById: supervisor.id,
       version: 1,
-      status: 'PENDING',
+      status: 'APPROVED',
+      approvedAt: new Date('2025-04-22T18:00:00.000Z'),
       subtotal: quoteSubtotal,
       laborCost,
       extraCost: 0,
@@ -491,7 +492,7 @@ async function main(): Promise<void> {
       taxAmount,
       advancePayment: total * 0.5,
       total,
-      notes: 'Cotización inicial pendiente de aprobación del cliente.'
+      notes: 'Cotización aprobada para iniciar producción.'
     }
   });
 
@@ -536,50 +537,67 @@ async function main(): Promise<void> {
     ]
   });
 
-  await prisma.activity.createMany({
-    data: [
-      {
+  const seededActivities = await Promise.all([
+    prisma.activity.create({
+      data: {
         projectId: project.id,
-        assignedToId: architect.id,
-        title: 'Toma de medidas',
-        stage: 'Planeación',
+        assignedUserId: architect.id,
+        title: 'Revisión final de diseño',
+        description: 'Validar medidas y acabados antes de producción.',
+        stage: 'DESIGN_REVIEW',
         status: 'DONE',
         priority: 'MEDIUM',
+        progressPercent: 100,
         startDate: new Date('2025-04-15T09:00:00.000Z'),
-        dueDate: new Date('2025-04-15T18:00:00.000Z'),
-        completedAt: new Date('2025-04-15T15:00:00.000Z')
-      },
-      {
+        dueDate: new Date('2025-04-16T18:00:00.000Z'),
+        completedAt: new Date('2025-04-16T15:00:00.000Z'),
+        notes: 'Diseño aprobado para continuar.'
+      }
+    }),
+    prisma.activity.create({
+      data: {
         projectId: project.id,
-        assignedToId: responsible.id,
+        assignedUserId: responsible.id,
         title: 'Confirmación de materiales',
-        stage: 'Producción',
+        description: 'Confirmar disponibilidad con el proveedor.',
+        stage: 'PRODUCTION',
         status: 'IN_PROGRESS',
         priority: 'HIGH',
+        progressPercent: 60,
         startDate: new Date('2025-04-20T09:00:00.000Z'),
-        dueDate: new Date('2025-04-25T18:00:00.000Z')
-      },
-      {
+        dueDate: new Date('2025-04-25T18:00:00.000Z'),
+        notes: 'Falta confirmar la cubierta de granito.'
+      }
+    }),
+    prisma.activity.create({
+      data: {
         projectId: project.id,
-        assignedToId: responsible.id,
+        assignedUserId: responsible.id,
+        assignedPersonName: 'Equipo externo de instalación',
         title: 'Instalación de módulos',
-        stage: 'Instalación',
-        status: 'PENDING',
+        description: 'Montaje, nivelación y ajuste final en sitio.',
+        stage: 'INSTALLATION',
+        status: 'TODO',
         priority: 'MEDIUM',
+        progressPercent: 0,
         startDate: new Date('2025-05-07T09:00:00.000Z'),
         dueDate: new Date('2025-05-10T18:00:00.000Z')
       }
-    ]
-  });
+    })
+  ]);
 
   await prisma.alert.create({
     data: {
       projectId: project.id,
+      activityId: seededActivities[1].id,
       createdById: supervisor.id,
-      title: 'Sin confirmación',
-      message:
-        'Retraso en confirmación de materiales por parte del proveedor. Se requiere seguimiento urgente.',
-      priority: 'URGENT'
+      title: 'Sin confirmación de cubierta',
+      description:
+        'El proveedor todavía no confirma la cubierta de granito. Se requiere seguimiento urgente.',
+      type: 'INCIDENT',
+      priority: 'URGENT',
+      status: 'OPEN',
+      dueDate: new Date('2025-04-25T18:00:00.000Z')
     }
   });
 
@@ -646,7 +664,7 @@ async function main(): Promise<void> {
         entityType: 'Quote',
         entityId: quote.id,
         title: 'Cotización generada',
-        description: 'Se generó la primera cotización pendiente de aprobación.'
+        description: 'Se generó y aprobó la primera cotización del proyecto.'
       }
     ]
   });

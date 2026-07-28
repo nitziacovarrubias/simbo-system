@@ -13,6 +13,8 @@ import { PlaceholderPage } from '@renderer/modules/placeholder/PlaceholderPage';
 import { DesignEditorPage } from '@renderer/modules/design-editor/DesignEditorPage';
 import { CuttingListPage } from '@renderer/modules/cutting-list/CuttingListPage';
 import { QuotesPage } from '@renderer/modules/quotes/QuotesPage';
+import { SchedulePage } from '@renderer/modules/schedule/SchedulePage';
+import { AlertsPage } from '@renderer/modules/alerts/AlertsPage';
 import { appRoutes } from '@renderer/routes/app-routes';
 import { useSessionStore } from '@renderer/stores/session.store';
 import type { UserRole } from '@shared/constants/roles';
@@ -64,9 +66,17 @@ export function App(): JSX.Element {
   const designRoute = appRoutes.find((route) => route.path === '/design-editor');
   const cuttingListRoute = appRoutes.find((route) => route.path === '/cutting-list');
   const quotationsRoute = appRoutes.find((route) => route.path === '/quotations');
+  const scheduleRoute = appRoutes.find((route) => route.path === '/schedule');
+  const alertsRoute = appRoutes.find((route) => route.path === '/alerts');
   const placeholderRoutes = appRoutes.filter(
     (route) =>
-      route.path !== '/clients' && route.path !== '/projects' && route.path !== '/design-editor' && route.path !== '/cutting-list' && route.path !== '/quotations'
+      route.path !== '/clients' &&
+      route.path !== '/projects' &&
+      route.path !== '/design-editor' &&
+      route.path !== '/cutting-list' &&
+      route.path !== '/quotations' &&
+      route.path !== '/schedule' &&
+      route.path !== '/alerts'
   );
 
   return (
@@ -169,6 +179,38 @@ export function App(): JSX.Element {
               }
             />
             <Route path="/quotations" element={<Navigate to="/projects" replace />} />
+            <Route
+              path="/schedule"
+              element={
+                <RequireRole allowedRoles={scheduleRoute?.allowedRoles ?? []}>
+                  <SchedulePage />
+                </RequireRole>
+              }
+            />
+            <Route
+              path="/projects/:projectId/schedule"
+              element={
+                <RequireRole allowedRoles={scheduleRoute?.allowedRoles ?? []}>
+                  <SchedulePage />
+                </RequireRole>
+              }
+            />
+            <Route
+              path="/alerts"
+              element={
+                <RequireRole allowedRoles={alertsRoute?.allowedRoles ?? []}>
+                  <AlertsPage />
+                </RequireRole>
+              }
+            />
+            <Route
+              path="/projects/:projectId/alerts"
+              element={
+                <RequireRole allowedRoles={alertsRoute?.allowedRoles ?? []}>
+                  <AlertsPage />
+                </RequireRole>
+              }
+            />
 
             {placeholderRoutes.map((route) => (
               <Route

@@ -6,3 +6,7 @@ export * from './design.types';
 export * from './simbo-api.types';
 export * from './cutting-list.types';
 export * from './quote.types';
+export * from './activity.types';
+export * from './alert.types';
+export * from './schedule.types';
+export * from './project-progress.types';

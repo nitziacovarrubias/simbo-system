@@ -68,20 +68,13 @@ export enum Currency {
   USD = 'USD',
 }
 
-export enum ActivityStatus {
-  PENDING = 'PENDING',
-  IN_PROGRESS = 'IN_PROGRESS',
-  DONE = 'DONE',
-  BLOCKED = 'BLOCKED',
-  CANCELED = 'CANCELED',
-}
+export { ActivityStage } from './activity-stage';
+export { ActivityStatus } from './activity-status';
+export { ActivityPriority } from './activity-priority';
+export { AlertType } from './alert-type';
+export { AlertPriority } from './alert-priority';
+export { AlertStatus } from './alert-status';
 
-export enum AlertPriority {
-  LOW = 'LOW',
-  MEDIUM = 'MEDIUM',
-  HIGH = 'HIGH',
-  URGENT = 'URGENT',
-}
 
 export enum DocumentType {
   MEASUREMENTS = 'MEASUREMENTS',

@@ -12,6 +12,7 @@ import type {
   User
 } from '@prisma/client';
 import {
+  ActivityPriority,
   ActivityStatus,
   AlertPriority,
   ClientStatus,
@@ -62,9 +63,9 @@ export function toPersonSummary(person: Person): PersonSummary {
 }
 
 function getAssignedPersonName(
-  activities: Array<{ assignedTo: (User & { person: Person | null }) | null }>
+  activities: Array<{ assignedUser: (User & { person: Person | null }) | null }>
 ): string | null {
-  const person = activities.find((activity) => activity.assignedTo?.person)?.assignedTo?.person;
+  const person = activities.find((activity) => activity.assignedUser?.person)?.assignedUser?.person;
   return person ? `${person.firstName} ${person.lastName}`.trim() : null;
 }
 
@@ -229,16 +230,16 @@ export function toQuoteListItem(quote: Quote): QuoteListItem {
 }
 
 export function toActivityListItem(
-  activity: Activity & { assignedTo?: (User & { person: Person | null }) | null }
+  activity: Activity & { assignedUser?: (User & { person: Person | null }) | null }
 ): ActivityListItem {
-  const assignedToPerson = activity.assignedTo?.person;
+  const assignedToPerson = activity.assignedUser?.person;
   return {
     id: activity.id,
     projectId: activity.projectId,
     title: activity.title,
     stage: activity.stage,
     status: activity.status as ActivityStatus,
-    priority: activity.priority as AlertPriority,
+    priority: activity.priority as ActivityPriority,
     assignedToName: assignedToPerson
       ? `${assignedToPerson.firstName} ${assignedToPerson.lastName}`.trim()
       : null,
@@ -252,9 +253,9 @@ export function toAlertListItem(alert: Alert): AlertListItem {
     id: alert.id,
     projectId: alert.projectId,
     title: alert.title,
-    message: alert.message,
+    message: alert.description,
     priority: alert.priority as AlertPriority,
-    isRead: alert.isRead,
+    isRead: alert.status === 'RESOLVED' || alert.status === 'DISMISSED',
     resolvedAt: toIso(alert.resolvedAt),
     createdAt: alert.createdAt.toISOString()
   };

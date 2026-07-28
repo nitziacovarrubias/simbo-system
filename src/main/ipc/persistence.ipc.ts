@@ -1,5 +1,6 @@
-import { app, ipcMain } from 'electron';
+import { app } from 'electron';
 import { z } from 'zod';
+import { registerSafeHandler } from './register-safe-handler';
 import { IPC_CHANNELS } from './ipc-channels';
 import { DatabaseService } from '../services/database.service';
 import { DashboardService } from '../services/dashboard.service';
@@ -9,8 +10,6 @@ import { ProjectService } from '../services/project.service';
 import { DesignService } from '../services/design.service';
 import { MaterialService } from '../services/material.service';
 import { RenderService } from '../services/render.service';
-import { ScheduleService } from '../services/schedule.service';
-import { AlertService } from '../services/alert.service';
 import { DocumentService } from '../services/document.service';
 import { HistoryService } from '../services/history.service';
 import {
@@ -25,26 +24,6 @@ import {
 
 const idOnlySchema = z.string().min(1);
 
-function registerSafeHandler<TArgs extends unknown[], TResult>(
-  channel: string,
-  handler: (...args: TArgs) => Promise<TResult> | TResult
-): void {
-  ipcMain.handle(channel, async (_event, ...args: TArgs) => {
-    try {
-      return await handler(...args);
-    } catch (error) {
-      const message =
-        error instanceof z.ZodError
-          ? error.issues.map((issue) => issue.message).join(' ')
-          : error instanceof Error
-            ? error.message
-            : 'Error desconocido';
-      console.error(`IPC handler failed: ${channel}`, error);
-      throw new Error(`No se pudo completar la operación: ${message}`);
-    }
-  });
-}
-
 export function registerPersistenceIpcHandlers(): void {
   const databaseService = new DatabaseService();
   const dashboardService = new DashboardService();
@@ -54,8 +33,6 @@ export function registerPersistenceIpcHandlers(): void {
   const designService = new DesignService();
   const materialService = new MaterialService();
   const renderService = new RenderService();
-  const scheduleService = new ScheduleService();
-  const alertService = new AlertService();
   const documentService = new DocumentService();
   const historyService = new HistoryService();
 
@@ -126,16 +103,6 @@ export function registerPersistenceIpcHandlers(): void {
   registerSafeHandler(IPC_CHANNELS.listRendersByProject, (projectId: string) => {
     const validProjectId = idOnlySchema.parse(projectId);
     return renderService.listRendersByProject(validProjectId);
-  });
-
-  registerSafeHandler(IPC_CHANNELS.listActivitiesByProject, (projectId: string) => {
-    const validProjectId = idOnlySchema.parse(projectId);
-    return scheduleService.listActivitiesByProject(validProjectId);
-  });
-
-  registerSafeHandler(IPC_CHANNELS.listAlertsByProject, (projectId: string) => {
-    const validProjectId = idOnlySchema.parse(projectId);
-    return alertService.listAlertsByProject(validProjectId);
   });
 
   registerSafeHandler(IPC_CHANNELS.listDocumentsByProject, (projectId: string) => {

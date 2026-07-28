@@ -3,8 +3,8 @@ import type { Prisma, PrismaClient, ProjectStatus } from '@prisma/client';
 const projectListInclude = {
   client: { include: { person: true } },
   activities: {
-    where: { assignedToId: { not: null } },
-    include: { assignedTo: { include: { person: true } } },
+    where: { assignedUserId: { not: null } },
+    include: { assignedUser: { include: { person: true } } },
     orderBy: { updatedAt: 'desc' as const },
     take: 1
   }
@@ -13,7 +13,7 @@ const projectListInclude = {
 const projectDetailInclude = {
   client: { include: { person: true } },
   activities: {
-    include: { assignedTo: { include: { person: true } } },
+    include: { assignedUser: { include: { person: true } } },
     orderBy: { updatedAt: 'desc' as const }
   },
   historyEntries: {
@@ -97,13 +97,20 @@ export class ProjectRepository {
   }
 
   updateStatus(id: string, status: ProjectStatus) {
+    return this.db.project.update({ where: { id }, data: { status } });
+  }
+
+  close(id: string, closedAt: Date) {
     return this.db.project.update({
       where: { id },
-      data: {
-        status,
-        closedAt: status === 'CLOSED' ? new Date() : undefined,
-        archivedAt: status === 'ARCHIVED' ? new Date() : undefined
-      }
+      data: { status: 'CLOSED', closedAt }
+    });
+  }
+
+  archive(id: string, archivedAt: Date) {
+    return this.db.project.update({
+      where: { id },
+      data: { status: 'ARCHIVED', archivedAt }
     });
   }
 

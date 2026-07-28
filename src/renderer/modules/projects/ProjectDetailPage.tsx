@@ -1,4 +1,4 @@
-import { ArrowLeft, ClipboardList, Edit3, History, MapPin, MoveRight, UserRound, WalletCards } from 'lucide-react';
+import { ArrowLeft, BellRing, CalendarDays, ClipboardList, Edit3, History, MapPin, MoveRight, UserRound, WalletCards } from 'lucide-react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { PROJECT_STATUS_LABEL } from '@renderer/utils/domain-labels';
 import { formatDate, getErrorMessage } from '@renderer/utils/formatters';
@@ -166,6 +166,21 @@ export function ProjectDetailPage(): JSX.Element {
         >
           Abrir cotización <WalletCards size={18} aria-hidden="true" />
         </button>
+      </div>
+
+      <div className="continue-design-card">
+        <div>
+          <h3>Cronograma y alertas</h3>
+          <p>Asigna responsables, controla fechas, registra incidencias y consulta el avance del proyecto.</p>
+        </div>
+        <div className="project-module-actions">
+          <button className="accent-button" type="button" onClick={() => navigate(`/projects/${project.id}/schedule`)}>
+            Abrir cronograma <CalendarDays size={18} aria-hidden="true" />
+          </button>
+          <button className="secondary-button" type="button" onClick={() => navigate(`/projects/${project.id}/alerts`)}>
+            Ver alertas <BellRing size={18} aria-hidden="true" />
+          </button>
+        </div>
       </div>
 
       <div className="section-heading">

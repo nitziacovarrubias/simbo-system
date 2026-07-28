@@ -1,40 +1,59 @@
-import type { Prisma, PrismaClient } from '@prisma/client';
+import type { AlertStatus, AlertType, Prisma, PrismaClient } from '@prisma/client';
+
+const alertInclude = {
+  project: { select: { name: true } },
+  activity: { select: { title: true } }
+} satisfies Prisma.AlertInclude;
+
+export type AlertRecord = Prisma.AlertGetPayload<{ include: typeof alertInclude }>;
 
 export class AlertRepository {
   constructor(private readonly db: PrismaClient) {}
 
-  listByProject(projectId: string) {
+  listByProject(projectId: string): Promise<AlertRecord[]> {
     return this.db.alert.findMany({
       where: { projectId },
-      orderBy: [{ resolvedAt: 'asc' }, { priority: 'desc' }, { createdAt: 'desc' }],
+      include: alertInclude,
+      orderBy: [{ status: 'asc' }, { priority: 'desc' }, { createdAt: 'desc' }]
     });
   }
 
-  listOpen() {
+  listAll(): Promise<AlertRecord[]> {
     return this.db.alert.findMany({
-      where: { resolvedAt: null },
-      orderBy: [{ priority: 'desc' }, { createdAt: 'desc' }],
+      include: alertInclude,
+      orderBy: [{ status: 'asc' }, { priority: 'desc' }, { createdAt: 'desc' }]
     });
   }
 
-  create(data: Prisma.AlertCreateInput) {
-    return this.db.alert.create({ data });
+  findById(id: string): Promise<AlertRecord | null> {
+    return this.db.alert.findUnique({ where: { id }, include: alertInclude });
   }
 
-  markAsRead(id: string) {
-    return this.db.alert.update({
-      where: { id },
-      data: { isRead: true },
-    });
-  }
-
-  resolve(id: string) {
-    return this.db.alert.update({
-      where: { id },
-      data: {
-        isRead: true,
-        resolvedAt: new Date(),
+  findOpenDuplicate(activityId: string, type: AlertType): Promise<AlertRecord | null> {
+    return this.db.alert.findFirst({
+      where: {
+        activityId,
+        type,
+        status: { in: ['OPEN', 'IN_REVIEW'] }
       },
+      include: alertInclude
+    });
+  }
+
+  create(data: Prisma.AlertUncheckedCreateInput): Promise<AlertRecord> {
+    return this.db.alert.create({ data, include: alertInclude });
+  }
+
+  updateStatus(
+    id: string,
+    status: AlertStatus,
+    resolutionNotes: string,
+    resolvedAt: Date
+  ): Promise<AlertRecord> {
+    return this.db.alert.update({
+      where: { id },
+      data: { status, resolutionNotes, resolvedAt },
+      include: alertInclude
     });
   }
 }

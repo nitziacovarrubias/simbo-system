@@ -1,6 +1,4 @@
 import type {
-  ActivityListItem,
-  AlertListItem,
   AppInfo,
   ClientListItem,
   DashboardSummary,
@@ -37,6 +35,16 @@ import type {
   QuoteItemInput,
   QuoteSummary
 } from './quote.types';
+
+import type { ActivityInput, ActivityUpdateInput, ProjectActivity } from './activity.types';
+import type { GenerateProjectAlertsResult, IncidentAlertInput, ProjectAlert } from './alert.types';
+import type { ProjectProgressReport } from './project-progress.types';
+import type {
+  ArchiveProjectInput,
+  CloseProjectInput,
+  ProjectClosingResult,
+  ProjectSchedule
+} from './schedule.types';
 
 export interface SimboApi {
   getAppInfo: () => Promise<AppInfo>;
@@ -83,8 +91,19 @@ export interface SimboApi {
   approveQuote: (quoteId: string, notes?: string) => Promise<QuoteDetail>;
   rejectQuote: (quoteId: string, reason: string) => Promise<QuoteDetail>;
   exportQuoteToExcel: (quoteId: string) => Promise<QuoteExportResult>;
-  listActivitiesByProject: (projectId: string) => Promise<ActivityListItem[]>;
-  listAlertsByProject: (projectId: string) => Promise<AlertListItem[]>;
+  getScheduleByProjectId: (projectId: string) => Promise<ProjectSchedule>;
+  createActivity: (projectId: string, input: ActivityInput) => Promise<ProjectActivity>;
+  updateActivity: (activityId: string, input: ActivityUpdateInput) => Promise<ProjectActivity>;
+  deleteActivity: (activityId: string) => Promise<{ id: string; projectId: string }>;
+  generateProjectAlerts: (projectId: string) => Promise<GenerateProjectAlertsResult>;
+  getAlertsByProjectId: (projectId: string) => Promise<ProjectAlert[]>;
+  getAllAlerts: () => Promise<ProjectAlert[]>;
+  createIncidentAlert: (projectId: string, input: IncidentAlertInput) => Promise<ProjectAlert>;
+  resolveAlert: (alertId: string, notes: string) => Promise<ProjectAlert>;
+  dismissAlert: (alertId: string, notes: string) => Promise<ProjectAlert>;
+  getProjectProgressReport: (projectId: string) => Promise<ProjectProgressReport>;
+  closeProject: (projectId: string, input: CloseProjectInput) => Promise<ProjectClosingResult>;
+  archiveProject: (projectId: string, input: ArchiveProjectInput) => Promise<ProjectClosingResult>;
   listDocumentsByProject: (projectId: string) => Promise<DocumentListItem[]>;
   listHistoryByProject: (projectId: string) => Promise<HistoryEntryListItem[]>;
 }

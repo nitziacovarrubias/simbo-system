@@ -1,37 +1,21 @@
 import type { Prisma, PrismaClient } from '@prisma/client';
 
+const scheduleProjectInclude = {
+  client: { include: { person: true } },
+  quotes: { select: { status: true } }
+} satisfies Prisma.ProjectInclude;
+
+export type ScheduleProjectRecord = Prisma.ProjectGetPayload<{
+  include: typeof scheduleProjectInclude;
+}>;
+
 export class ScheduleRepository {
   constructor(private readonly db: PrismaClient) {}
 
-  listActivitiesByProject(projectId: string) {
-    return this.db.activity.findMany({
-      where: { projectId },
-      include: {
-        assignedTo: { include: { person: true } },
-      },
-      orderBy: [{ dueDate: 'asc' }, { createdAt: 'asc' }],
+  findProjectContext(projectId: string): Promise<ScheduleProjectRecord | null> {
+    return this.db.project.findUnique({
+      where: { id: projectId },
+      include: scheduleProjectInclude
     });
-  }
-
-  listUpcoming(days: number) {
-    const now = new Date();
-    const until = new Date(now);
-    until.setDate(until.getDate() + days);
-
-    return this.db.activity.findMany({
-      where: {
-        dueDate: {
-          gte: now,
-          lte: until,
-        },
-        status: {
-          notIn: ['DONE', 'CANCELED'],
-        },
-      },
-    });
-  }
-
-  createActivity(data: Prisma.ActivityCreateInput) {
-    return this.db.activity.create({ data });
   }
 }
