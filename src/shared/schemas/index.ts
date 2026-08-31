@@ -18,3 +18,5 @@ export * from './activity.schema';
 export * from './alert.schema';
 export * from './schedule.schema';
 export * from './project-closing.schema';
+export * from './render.schema';
+export * from './freecad.schema';

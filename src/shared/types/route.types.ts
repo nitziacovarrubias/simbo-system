@@ -12,6 +12,7 @@ export interface AppRoute {
     | 'projects'
     | 'clients'
     | 'designEditor'
+    | 'renders'
     | 'cuttingList'
     | 'quotations'
     | 'schedule'

@@ -1,4 +1,4 @@
-import { ArrowLeft, BellRing, CalendarDays, ClipboardList, Edit3, History, MapPin, MoveRight, UserRound, WalletCards } from 'lucide-react';
+import { ArrowLeft, BellRing, CalendarDays, ClipboardList, Edit3, History, Image, MapPin, MoveRight, UserRound, WalletCards } from 'lucide-react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { PROJECT_STATUS_LABEL } from '@renderer/utils/domain-labels';
 import { formatDate, getErrorMessage } from '@renderer/utils/formatters';
@@ -137,6 +137,20 @@ export function ProjectDetailPage(): JSX.Element {
           onClick={() => navigate(`/projects/${project.id}/design`)}
         >
           Continuar a diseño <MoveRight size={18} aria-hidden="true" />
+        </button>
+      </div>
+
+      <div className="continue-design-card">
+        <div>
+          <h3>Renders y modelo CAD</h3>
+          <p>Genera imágenes de presentación desde la escena 3D y artefactos técnicos con FreeCADCmd cuando esté configurado.</p>
+        </div>
+        <button
+          className="accent-button"
+          type="button"
+          onClick={() => navigate(`/projects/${project.id}/renders`)}
+        >
+          Abrir renders <Image size={18} aria-hidden="true" />
         </button>
       </div>
 

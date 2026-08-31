@@ -5,6 +5,7 @@ import {
   FileText,
   FolderKanban,
   LayoutDashboard,
+  Image,
   Ruler,
   Settings,
   Users,
@@ -52,6 +53,14 @@ export const appRoutes: AppRoute[] = [
     Icon: Ruler,
     allowedRoles: [UserRole.ARCHITECT, UserRole.COLLABORATOR],
     moduleKey: 'designEditor'
+  },
+  {
+    path: '/renders',
+    title: 'Renders',
+    description: 'Generación de imágenes de presentación y artefactos CAD desde el diseño guardado.',
+    Icon: Image,
+    allowedRoles: [UserRole.ARCHITECT, UserRole.SUPERVISOR, UserRole.COLLABORATOR],
+    moduleKey: 'renders'
   },
   {
     path: '/cutting-list',

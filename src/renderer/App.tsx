@@ -15,6 +15,9 @@ import { CuttingListPage } from '@renderer/modules/cutting-list/CuttingListPage'
 import { QuotesPage } from '@renderer/modules/quotes/QuotesPage';
 import { SchedulePage } from '@renderer/modules/schedule/SchedulePage';
 import { AlertsPage } from '@renderer/modules/alerts/AlertsPage';
+import { RenderListPage } from '@renderer/modules/renders/RenderListPage';
+import { RenderEditorPage } from '@renderer/modules/renders/RenderEditorPage';
+import { RenderViewerPage } from '@renderer/modules/renders/RenderViewerPage';
 import { appRoutes } from '@renderer/routes/app-routes';
 import { useSessionStore } from '@renderer/stores/session.store';
 import type { UserRole } from '@shared/constants/roles';
@@ -65,6 +68,7 @@ export function App(): JSX.Element {
   const projectsRoute = appRoutes.find((route) => route.path === '/projects');
   const designRoute = appRoutes.find((route) => route.path === '/design-editor');
   const cuttingListRoute = appRoutes.find((route) => route.path === '/cutting-list');
+  const rendersRoute = appRoutes.find((route) => route.path === '/renders');
   const quotationsRoute = appRoutes.find((route) => route.path === '/quotations');
   const scheduleRoute = appRoutes.find((route) => route.path === '/schedule');
   const alertsRoute = appRoutes.find((route) => route.path === '/alerts');
@@ -74,6 +78,7 @@ export function App(): JSX.Element {
       route.path !== '/projects' &&
       route.path !== '/design-editor' &&
       route.path !== '/cutting-list' &&
+      route.path !== '/renders' &&
       route.path !== '/quotations' &&
       route.path !== '/schedule' &&
       route.path !== '/alerts'
@@ -161,6 +166,31 @@ export function App(): JSX.Element {
               }
             />
             <Route path="/design-editor" element={<Navigate to="/projects" replace />} />
+            <Route
+              path="/projects/:projectId/renders"
+              element={
+                <RequireRole allowedRoles={rendersRoute?.allowedRoles ?? []}>
+                  <RenderListPage />
+                </RequireRole>
+              }
+            />
+            <Route
+              path="/projects/:projectId/renders/new"
+              element={
+                <RequireRole allowedRoles={rendersRoute?.allowedRoles ?? []}>
+                  <RenderEditorPage />
+                </RequireRole>
+              }
+            />
+            <Route
+              path="/projects/:projectId/renders/:renderId"
+              element={
+                <RequireRole allowedRoles={rendersRoute?.allowedRoles ?? []}>
+                  <RenderViewerPage />
+                </RequireRole>
+              }
+            />
+            <Route path="/renders" element={<Navigate to="/projects" replace />} />
             <Route
               path="/projects/:projectId/cutting-list"
               element={

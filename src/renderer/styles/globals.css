@@ -2548,3 +2548,300 @@ select:disabled {
     width: 100%;
   }
 }
+
+/* Module 08: render y FreeCAD */
+.freecad-status-panel {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 12px;
+  margin: 16px 0 22px;
+  padding: 14px 16px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: #ffffff;
+}
+
+.freecad-status-panel.is-available {
+  border-left: 5px solid var(--color-success);
+}
+
+.freecad-status-panel.is-unavailable {
+  border-left: 5px solid #c27a12;
+}
+
+.freecad-status-panel p,
+.render-preview-note,
+.render-card p {
+  margin: 4px 0 0;
+  color: var(--color-text-soft);
+}
+
+.render-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.render-card {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 14px;
+  width: 100%;
+  padding: 18px;
+  text-align: left;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: #ffffff;
+}
+
+.render-card:hover,
+.render-card:focus-visible {
+  border-color: var(--color-accent);
+  box-shadow: 0 8px 24px rgba(41, 50, 65, 0.1);
+}
+
+.render-card h3 {
+  margin: 4px 0;
+}
+
+.render-card-icon {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: rgba(217, 125, 84, 0.13);
+  color: var(--color-accent);
+}
+
+.render-card-flags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.render-card-flags span {
+  padding: 5px 8px;
+  border-radius: 999px;
+  background: #edf2f4;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.render-card-flags .is-warning,
+.render-outdated-warning,
+.render-collision-warning {
+  background: #fff0dc;
+  color: #7c4b08;
+}
+
+.render-outdated-warning,
+.render-collision-warning {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 12px 0;
+  padding: 11px 13px;
+  border-radius: var(--radius-sm);
+  font-weight: 700;
+}
+
+.render-empty-state {
+  text-align: center;
+}
+
+.render-editor-page {
+  display: grid;
+  gap: 18px;
+}
+
+.render-editor-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(330px, 0.75fr);
+  gap: 20px;
+  align-items: start;
+}
+
+.render-preview {
+  min-height: 560px;
+  height: min(68vh, 720px);
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: #eef2f3;
+  box-shadow: var(--shadow-card);
+}
+
+.render-wizard {
+  display: grid;
+  gap: 14px;
+  padding: 22px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: #ffffff;
+  box-shadow: var(--shadow-card);
+}
+
+.render-wizard h3,
+.render-decision-panel h3 {
+  margin: 4px 0;
+}
+
+.render-wizard label,
+.render-version-selector {
+  display: grid;
+  gap: 6px;
+  font-weight: 700;
+}
+
+.render-wizard input,
+.render-wizard select,
+.render-wizard textarea,
+.render-version-selector select,
+.render-decision-panel textarea {
+  width: 100%;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  padding: 10px 11px;
+  background: #ffffff;
+  color: var(--color-text);
+}
+
+.render-wizard textarea,
+.render-decision-panel textarea {
+  resize: vertical;
+}
+
+.render-wizard-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.render-generation-status {
+  padding: 12px;
+  border-radius: 10px;
+  background: #e9f1f7;
+  color: #294b66;
+  font-weight: 700;
+}
+
+.render-viewer-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(320px, 0.8fr);
+  gap: 24px;
+  align-items: start;
+}
+
+.render-image-panel {
+  display: grid;
+  gap: 12px;
+}
+
+.render-image-panel img,
+.render-image-placeholder {
+  width: 100%;
+  min-height: 420px;
+  max-height: 72vh;
+  object-fit: contain;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: #e9eef0;
+}
+
+.render-image-placeholder {
+  display: grid;
+  place-items: center;
+  color: var(--color-text-soft);
+}
+
+.render-metadata-panel,
+.cad-artifacts-panel,
+.render-decision-panel {
+  padding: 20px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: #ffffff;
+}
+
+.render-metadata-panel h2 {
+  margin: 6px 0 12px;
+}
+
+.render-metadata-list {
+  display: grid;
+  gap: 0;
+  margin: 0;
+}
+
+.render-metadata-list > div {
+  display: grid;
+  grid-template-columns: minmax(130px, 0.75fr) minmax(0, 1fr);
+  gap: 12px;
+  padding: 9px 0;
+  border-bottom: 1px solid #edf0f2;
+}
+
+.render-metadata-list dt {
+  font-weight: 800;
+}
+
+.render-metadata-list dd {
+  margin: 0;
+  color: var(--color-text-soft);
+}
+
+.cad-artifacts-panel,
+.render-decision-panel {
+  margin-top: 22px;
+}
+
+.cad-artifact-list {
+  display: grid;
+  gap: 8px;
+  margin: 14px 0;
+}
+
+.cad-artifact-row {
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) minmax(110px, auto) auto;
+  gap: 12px;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #edf0f2;
+}
+
+.render-decision-panel {
+  display: grid;
+  gap: 12px;
+}
+
+@media (max-width: 1100px) {
+  .render-editor-layout,
+  .render-viewer-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .render-preview {
+    min-height: 440px;
+  }
+}
+
+@media (max-width: 680px) {
+  .render-wizard-actions,
+  .cad-artifact-row {
+    grid-template-columns: 1fr;
+  }
+
+  .render-wizard-actions {
+    display: grid;
+  }
+
+  .render-metadata-list > div {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+}

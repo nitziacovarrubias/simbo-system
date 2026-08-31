@@ -11,6 +11,7 @@ describe('appRoutes', () => {
         expect(paths).toContain('/clients');
         expect(paths).toContain('/design-editor');
         expect(paths).toContain('/cutting-list');
+        expect(paths).toContain('/renders');
         expect(paths).toContain('/quotations');
         expect(paths).toContain('/schedule');
         expect(paths).toContain('/alerts');

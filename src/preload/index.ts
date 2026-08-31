@@ -34,6 +34,22 @@ const simboApi: SimboApi = {
   listMaterials: () => ipcRenderer.invoke(IPC_CHANNELS.listMaterials),
   listRendersByProject: (projectId) =>
     ipcRenderer.invoke(IPC_CHANNELS.listRendersByProject, projectId),
+  getRenderById: (renderId) => ipcRenderer.invoke(IPC_CHANNELS.getRenderById, renderId),
+  getFreeCadStatus: () => ipcRenderer.invoke(IPC_CHANNELS.getFreeCadStatus),
+  prepareProjectRender: (projectId, designId, input) =>
+    ipcRenderer.invoke(IPC_CHANNELS.prepareProjectRender, projectId, designId, input),
+  completeProjectRender: (renderId, imageDataUrl) =>
+    ipcRenderer.invoke(IPC_CHANNELS.completeProjectRender, renderId, imageDataUrl),
+  failProjectRender: (renderId, message) =>
+    ipcRenderer.invoke(IPC_CHANNELS.failProjectRender, renderId, message),
+  generateRenderCad: (renderId) => ipcRenderer.invoke(IPC_CHANNELS.generateRenderCad, renderId),
+  getCadArtifacts: (renderId) => ipcRenderer.invoke(IPC_CHANNELS.getCadArtifacts, renderId),
+  getRenderImageData: (renderId) => ipcRenderer.invoke(IPC_CHANNELS.getRenderImageData, renderId),
+  approveRender: (renderId, notes) => ipcRenderer.invoke(IPC_CHANNELS.approveRender, renderId, notes),
+  rejectRender: (renderId, reason) => ipcRenderer.invoke(IPC_CHANNELS.rejectRender, renderId, reason),
+  saveRenderCopy: (renderId, artifactType) =>
+    ipcRenderer.invoke(IPC_CHANNELS.saveRenderCopy, renderId, artifactType),
+  openRenderLocation: (renderId) => ipcRenderer.invoke(IPC_CHANNELS.openRenderLocation, renderId),
   getCuttingListsByProjectId: (projectId) =>
     ipcRenderer.invoke(IPC_CHANNELS.getCuttingListsByProjectId, projectId),
   getCuttingListById: (cuttingListId) =>

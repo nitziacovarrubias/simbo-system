@@ -10,3 +10,4 @@ export * from './activity.types';
 export * from './alert.types';
 export * from './schedule.types';
 export * from './project-progress.types';
+export * from './render.types';

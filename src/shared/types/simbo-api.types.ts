@@ -8,10 +8,19 @@ import type {
   HistoryEntryListItem,
   MaterialListItem,
   ProjectListItem,
-  RenderListItem,
   UserListItem
 } from './domain.types';
 import type { ClientDetail, ClientMutationInput } from './client.types';
+import type {
+  CadArtifacts,
+  FreeCadStatus,
+  RenderCopyArtifactType,
+  RenderCopyResult,
+  RenderDetail,
+  RenderGenerationResult,
+  RenderSettingsInput,
+  RenderSummary
+} from './render.types';
 import type {
   CreateDesignInput,
   DesignDocument,
@@ -71,7 +80,23 @@ export interface SimboApi {
   getModuleTemplates: () => Promise<ModuleTemplateItem[]>;
   getMaterials: () => Promise<DesignMaterialItem[]>;
   listMaterials: () => Promise<MaterialListItem[]>;
-  listRendersByProject: (projectId: string) => Promise<RenderListItem[]>;
+  listRendersByProject: (projectId: string) => Promise<RenderSummary[]>;
+  getRenderById: (renderId: string) => Promise<RenderDetail>;
+  getFreeCadStatus: () => Promise<FreeCadStatus>;
+  prepareProjectRender: (
+    projectId: string,
+    designId: string,
+    input: RenderSettingsInput
+  ) => Promise<RenderDetail>;
+  completeProjectRender: (renderId: string, imageDataUrl: string) => Promise<RenderGenerationResult>;
+  failProjectRender: (renderId: string, message: string) => Promise<RenderDetail>;
+  generateRenderCad: (renderId: string) => Promise<string[]>;
+  getCadArtifacts: (renderId: string) => Promise<CadArtifacts>;
+  getRenderImageData: (renderId: string) => Promise<string | null>;
+  approveRender: (renderId: string, notes?: string) => Promise<RenderDetail>;
+  rejectRender: (renderId: string, reason: string) => Promise<RenderDetail>;
+  saveRenderCopy: (renderId: string, artifactType: RenderCopyArtifactType) => Promise<RenderCopyResult>;
+  openRenderLocation: (renderId: string) => Promise<boolean>;
   getCuttingListsByProjectId: (projectId: string) => Promise<CuttingListSummary[]>;
   getCuttingListById: (cuttingListId: string) => Promise<CuttingListDetail>;
   generateCuttingList: (projectId: string, designId: string) => Promise<CuttingListDetail>;

@@ -33,8 +33,10 @@ export enum DesignStatus {
 }
 
 export enum RenderStatus {
+  GENERATING = 'GENERATING',
   PRELIMINARY = 'PRELIMINARY',
   FINAL = 'FINAL',
+  FAILED = 'FAILED',
   APPROVED = 'APPROVED',
   REJECTED = 'REJECTED',
 }

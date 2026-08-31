@@ -1,0 +1,32 @@
+{
+  "project": {
+    "id": "sample-project",
+    "name": "Cocina de prueba SIMBO",
+    "units": "mm"
+  },
+  "room": {
+    "layoutType": "RECTANGULAR",
+    "widthMm": 3400,
+    "depthMm": 2800,
+    "heightMm": 2400
+  },
+  "modules": [
+    {
+      "id": "base-01",
+      "type": "BASE_CABINET",
+      "name": "Gabinete bajo 800",
+      "widthMm": 800,
+      "heightMm": 720,
+      "depthMm": 560,
+      "positionX": 700,
+      "positionY": 0,
+      "positionZ": 500,
+      "rotationY": 0,
+      "material": {
+        "name": "MDF Blanco 18mm",
+        "thicknessMm": 18,
+        "colorHex": "#FFFFFF"
+      }
+    }
+  ]
+}

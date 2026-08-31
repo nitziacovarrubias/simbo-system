@@ -42,8 +42,10 @@ enum DesignStatus {
 }
 
 enum RenderStatus {
+  GENERATING
   PRELIMINARY
   FINAL
+  FAILED
   APPROVED
   REJECTED
 }
@@ -381,6 +383,12 @@ model Render {
   cameraAngle      String?
   quality          String?
   notes            String?
+  fcstdPath        String?
+  stepPath         String?
+  stlPath          String?
+  objPath          String?
+  generatedAt      DateTime?
+  failureMessage   String?
   createdAt        DateTime     @default(now())
   updatedAt        DateTime     @updatedAt
 
