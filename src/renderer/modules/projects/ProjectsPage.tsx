@@ -1,12 +1,24 @@
-import { Filter, FolderPlus, Search } from 'lucide-react';
+import {
+  CalendarDays,
+  Filter,
+  FolderKanban,
+  FolderPlus,
+  MapPin,
+  Ruler,
+  Search,
+  UserRound
+} from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ProjectStatus } from '@shared/constants/domain.enums';
 import { ACTIVE_PROJECT_STATUSES, PROJECT_STATUS_LABEL } from '@renderer/utils/domain-labels';
 import { formatDate, getErrorMessage } from '@renderer/utils/formatters';
 import { useProjectsQuery } from './project.queries';
+import './projects.css';
 
 type ProjectFilter = 'ALL' | 'ACTIVE' | 'FINISHED' | ProjectStatus;
+
+const FINISHED_STATUSES = [ProjectStatus.CLOSED, ProjectStatus.ARCHIVED];
 
 export function ProjectsPage(): JSX.Element {
   const [search, setSearch] = useState('');
@@ -27,31 +39,54 @@ export function ProjectsPage(): JSX.Element {
       const matchesStatus =
         statusFilter === 'ALL' ||
         (statusFilter === 'ACTIVE' && ACTIVE_PROJECT_STATUSES.includes(project.status)) ||
-        (statusFilter === 'FINISHED' &&
-          [ProjectStatus.CLOSED, ProjectStatus.ARCHIVED].includes(project.status)) ||
+        (statusFilter === 'FINISHED' && FINISHED_STATUSES.includes(project.status)) ||
         project.status === statusFilter;
 
       return matchesSearch && matchesStatus;
     });
   }, [projectsQuery.data, search, statusFilter]);
 
+  const activeProjects = useMemo(
+    () => filteredProjects.filter((project) => ACTIVE_PROJECT_STATUSES.includes(project.status)),
+    [filteredProjects]
+  );
+
+  const finishedProjects = useMemo(
+    () => filteredProjects.filter((project) => FINISHED_STATUSES.includes(project.status)),
+    [filteredProjects]
+  );
+
+  const activeStatusSummary = useMemo(() => {
+    return Object.values(ProjectStatus)
+      .filter((status) => ACTIVE_PROJECT_STATUSES.includes(status))
+      .map((status) => ({
+        status,
+        count: (projectsQuery.data ?? []).filter((project) => project.status === status).length
+      }))
+      .filter((item) => item.count > 0)
+      .slice(0, 4);
+  }, [projectsQuery.data]);
+
   return (
-    <section className="page-panel" aria-labelledby="projects-title">
-      <div className="module-page-header">
+    <section className="projects-design-page" aria-labelledby="projects-title">
+      <header className="projects-hero">
         <div>
-          <p className="page-eyebrow">Expedientes</p>
-          <h2 id="projects-title">Proyectos</h2>
-          <p>Administra proyectos activos, finalizados, clientes, fechas y medidas.</p>
+          <p className="projects-hero-kicker">Gestión de proyectos</p>
+          <h1 id="projects-title">LISTADO DE PROYECTOS</h1>
+          <p>
+            Este es tu flujo de actividad actual. Consulta el estado de cada proyecto y continúa
+            con las tareas pendientes.
+          </p>
         </div>
 
-        <Link className="primary-link-button" to="/projects/new">
-          <FolderPlus size={18} aria-hidden="true" />
+        <Link className="projects-new-button" to="/projects/new">
+          <FolderPlus size={19} aria-hidden="true" />
           Nuevo proyecto
         </Link>
-      </div>
+      </header>
 
-      <div className="toolbar-card toolbar-grid">
-        <label className="search-field" htmlFor="project-search">
+      <div className="projects-toolbar" aria-label="Filtros de proyectos">
+        <label className="projects-search" htmlFor="project-search">
           <Search size={18} aria-hidden="true" />
           <input
             id="project-search"
@@ -62,7 +97,7 @@ export function ProjectsPage(): JSX.Element {
           />
         </label>
 
-        <label className="filter-field" htmlFor="project-status-filter">
+        <label className="projects-filter" htmlFor="project-status-filter">
           <Filter size={18} aria-hidden="true" />
           <select
             id="project-status-filter"
@@ -80,65 +115,134 @@ export function ProjectsPage(): JSX.Element {
           </select>
         </label>
 
-        <span className="result-count">{filteredProjects.length} proyecto(s)</span>
+        <span className="projects-result-count">{filteredProjects.length} proyecto(s)</span>
       </div>
 
-      {projectsQuery.isLoading ? <div className="state-card">Cargando proyectos...</div> : null}
+      {projectsQuery.isLoading ? (
+        <div className="projects-state-card">Cargando proyectos...</div>
+      ) : null}
+
       {projectsQuery.isError ? (
-        <div className="state-card state-card-error" role="alert">
+        <div className="projects-state-card projects-state-card--error" role="alert">
           {getErrorMessage(projectsQuery.error)}
         </div>
       ) : null}
 
-      {!projectsQuery.isLoading && !projectsQuery.isError && filteredProjects.length === 0 ? (
-        <div className="state-card">
-          <h3>No hay proyectos para mostrar</h3>
-          <p>Crea un proyecto nuevo o cambia los filtros.</p>
-        </div>
-      ) : null}
+      {!projectsQuery.isLoading && !projectsQuery.isError ? (
+        <>
+          <section className="projects-section projects-section--active" aria-labelledby="active-projects-title">
+            <div className="projects-section-heading">
+              <h2 id="active-projects-title">PROYECTOS ACTIVOS</h2>
 
-      {filteredProjects.length > 0 ? (
-        <div className="project-card-grid">
-          {filteredProjects.map((project) => (
-            <article className="project-card" key={project.id}>
-              <div className="project-card-header">
-                <div>
-                  <span className={`status-pill status-${project.status.toLowerCase()}`}>
-                    {PROJECT_STATUS_LABEL[project.status]}
-                  </span>
-                  <h3>{project.name}</h3>
-                  <p>{project.clientName}</p>
+              {activeStatusSummary.length > 0 ? (
+                <div className="projects-status-summary" aria-label="Resumen de estados activos">
+                  {activeStatusSummary.map(({ status, count }) => (
+                    <span key={status}>
+                      <strong>{PROJECT_STATUS_LABEL[status]}:</strong> {count}
+                    </span>
+                  ))}
                 </div>
-                <span className={`measure-indicator ${project.hasRoomSpace ? 'is-complete' : ''}`}>
-                  {project.hasRoomSpace ? 'Medidas listas' : 'Sin medidas'}
-                </span>
+              ) : null}
+            </div>
+
+            {activeProjects.length === 0 ? (
+              <div className="projects-state-card">
+                <h3>No hay proyectos activos para mostrar</h3>
+                <p>Cambia los filtros o crea un proyecto nuevo.</p>
               </div>
+            ) : (
+              <div className="projects-active-grid">
+                {activeProjects.map((project, index) => (
+                  <article className="projects-active-card" key={project.id}>
+                    <div className={`projects-status-ribbon status-${project.status.toLowerCase()}`}>
+                      <FolderKanban size={18} aria-hidden="true" />
+                      {PROJECT_STATUS_LABEL[project.status]}
+                    </div>
 
-              <dl className="compact-detail-list">
-                <div>
-                  <dt>Ubicación</dt>
-                  <dd>{project.location ?? 'Sin ubicación'}</dd>
-                </div>
-                <div>
-                  <dt>Inicio</dt>
-                  <dd>{formatDate(project.startDate)}</dd>
-                </div>
-                <div>
-                  <dt>Entrega estimada</dt>
-                  <dd>{formatDate(project.deliveryDate)}</dd>
-                </div>
-                <div>
-                  <dt>Responsable</dt>
-                  <dd>{project.mainResponsibleName ?? 'Sin responsable asignado'}</dd>
-                </div>
-              </dl>
+                    <div className="projects-active-card-copy">
+                      <h3>{project.name}</h3>
 
-              <Link className="card-link" to={`/projects/${project.id}`}>
-                Ver proyecto
-              </Link>
-            </article>
-          ))}
-        </div>
+                      <dl>
+                        <div>
+                          <dt>
+                            <UserRound size={15} aria-hidden="true" /> Cliente
+                          </dt>
+                          <dd>{project.clientName}</dd>
+                        </div>
+                        <div>
+                          <dt>
+                            <MapPin size={15} aria-hidden="true" /> Ubicación
+                          </dt>
+                          <dd>{project.location ?? 'Sin ubicación'}</dd>
+                        </div>
+                        <div>
+                          <dt>
+                            <CalendarDays size={15} aria-hidden="true" /> Entrega
+                          </dt>
+                          <dd>{formatDate(project.deliveryDate)}</dd>
+                        </div>
+                      </dl>
+
+                      <div className="projects-card-meta">
+                        <span className={project.hasRoomSpace ? 'is-ready' : ''}>
+                          <Ruler size={15} aria-hidden="true" />
+                          {project.hasRoomSpace ? 'Medidas listas' : 'Sin medidas'}
+                        </span>
+                        <span>{project.mainResponsibleName ?? 'Sin responsable'}</span>
+                      </div>
+
+                      <Link className="projects-show-button" to={`/projects/${project.id}`}>
+                        Mostrar
+                      </Link>
+                    </div>
+
+                    <div className={`projects-active-card-visual projects-active-card-visual--${index % 4}`}>
+                      <FolderKanban size={54} strokeWidth={1.35} aria-hidden="true" />
+                      <span>{project.name.charAt(0).toUpperCase()}</span>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            )}
+          </section>
+
+          <section className="projects-section projects-section--finished" aria-labelledby="finished-projects-title">
+            <div className="projects-section-heading">
+              <h2 id="finished-projects-title">PROYECTOS FINALIZADOS</h2>
+              <p>
+                Este es tu historial de proyectos concluidos. Puedes abrir cualquier expediente para
+                consultar su información.
+              </p>
+            </div>
+
+            {finishedProjects.length === 0 ? (
+              <div className="projects-state-card">
+                <h3>No hay proyectos finalizados para mostrar</h3>
+                <p>Los proyectos cerrados o archivados aparecerán aquí.</p>
+              </div>
+            ) : (
+              <div className="projects-finished-grid">
+                {finishedProjects.map((project, index) => (
+                  <article className="projects-finished-card" key={project.id}>
+                    <div className={`projects-finished-visual projects-finished-visual--${index % 3}`}>
+                      <FolderKanban size={42} strokeWidth={1.35} aria-hidden="true" />
+                    </div>
+                    <div className="projects-finished-copy">
+                      <p>
+                        <MapPin size={14} aria-hidden="true" />
+                        {project.location ?? 'Sin ubicación'}
+                      </p>
+                      <h3>
+                        <Link to={`/projects/${project.id}`}>{project.name}</Link>
+                      </h3>
+                      <span>{project.clientName}</span>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            )}
+          </section>
+        </>
       ) : null}
     </section>
   );

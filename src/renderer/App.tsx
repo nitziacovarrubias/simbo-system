@@ -1,25 +1,35 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import type { ReactNode } from 'react';
 import { HashRouter, Navigate, Route, Routes } from 'react-router-dom';
+
 import { AppLayout } from '@renderer/components/layout/AppLayout';
+
 import { LoginPage } from '@renderer/modules/auth/LoginPage';
+import { DashboardPage } from '@renderer/modules/dashboard/DashboardPage';
+
 import { ClientDetailPage } from '@renderer/modules/clients/ClientDetailPage';
 import { EditClientPage, NewClientPage } from '@renderer/modules/clients/ClientForm';
 import { ClientsPage } from '@renderer/modules/clients/ClientsPage';
+
 import { EditProjectPage, NewProjectPage } from '@renderer/modules/projects/ProjectForm';
 import { ProjectDetailPage } from '@renderer/modules/projects/ProjectDetailPage';
 import { ProjectsPage } from '@renderer/modules/projects/ProjectsPage';
+
 import { PlaceholderPage } from '@renderer/modules/placeholder/PlaceholderPage';
+
 import { DesignEditorPage } from '@renderer/modules/design-editor/DesignEditorPage';
 import { CuttingListPage } from '@renderer/modules/cutting-list/CuttingListPage';
 import { QuotesPage } from '@renderer/modules/quotes/QuotesPage';
 import { SchedulePage } from '@renderer/modules/schedule/SchedulePage';
 import { AlertsPage } from '@renderer/modules/alerts/AlertsPage';
+
 import { RenderListPage } from '@renderer/modules/renders/RenderListPage';
 import { RenderEditorPage } from '@renderer/modules/renders/RenderEditorPage';
 import { RenderViewerPage } from '@renderer/modules/renders/RenderViewerPage';
+
 import { appRoutes } from '@renderer/routes/app-routes';
 import { useSessionStore } from '@renderer/stores/session.store';
+
 import type { UserRole } from '@shared/constants/roles';
 
 const queryClient = new QueryClient({
@@ -64,16 +74,45 @@ function ProtectedRoutes(): JSX.Element {
 }
 
 export function App(): JSX.Element {
-  const clientsRoute = appRoutes.find((route) => route.path === '/clients');
-  const projectsRoute = appRoutes.find((route) => route.path === '/projects');
-  const designRoute = appRoutes.find((route) => route.path === '/design-editor');
-  const cuttingListRoute = appRoutes.find((route) => route.path === '/cutting-list');
-  const rendersRoute = appRoutes.find((route) => route.path === '/renders');
-  const quotationsRoute = appRoutes.find((route) => route.path === '/quotations');
-  const scheduleRoute = appRoutes.find((route) => route.path === '/schedule');
-  const alertsRoute = appRoutes.find((route) => route.path === '/alerts');
+  const dashboardRoute = appRoutes.find(
+    (route) => route.path === '/dashboard'
+  );
+
+  const clientsRoute = appRoutes.find(
+    (route) => route.path === '/clients'
+  );
+
+  const projectsRoute = appRoutes.find(
+    (route) => route.path === '/projects'
+  );
+
+  const designRoute = appRoutes.find(
+    (route) => route.path === '/design-editor'
+  );
+
+  const cuttingListRoute = appRoutes.find(
+    (route) => route.path === '/cutting-list'
+  );
+
+  const rendersRoute = appRoutes.find(
+    (route) => route.path === '/renders'
+  );
+
+  const quotationsRoute = appRoutes.find(
+    (route) => route.path === '/quotations'
+  );
+
+  const scheduleRoute = appRoutes.find(
+    (route) => route.path === '/schedule'
+  );
+
+  const alertsRoute = appRoutes.find(
+    (route) => route.path === '/alerts'
+  );
+
   const placeholderRoutes = appRoutes.filter(
     (route) =>
+      route.path !== '/dashboard' &&
       route.path !== '/clients' &&
       route.path !== '/projects' &&
       route.path !== '/design-editor' &&
@@ -88,10 +127,28 @@ export function App(): JSX.Element {
     <QueryClientProvider client={queryClient}>
       <HashRouter>
         <Routes>
-          <Route path="/" element={<Navigate to="/login" replace />} />
-          <Route path="/login" element={<LoginPage />} />
+          <Route
+            path="/"
+            element={<Navigate to="/login" replace />}
+          />
+
+          <Route
+            path="/login"
+            element={<LoginPage />}
+          />
 
           <Route element={<ProtectedRoutes />}>
+            {/* Dashboard */}
+            <Route
+              path="/dashboard"
+              element={
+                <RequireRole allowedRoles={dashboardRoute?.allowedRoles ?? []}>
+                  <DashboardPage />
+                </RequireRole>
+              }
+            />
+
+            {/* Clientes */}
             <Route
               path="/clients"
               element={
@@ -100,6 +157,7 @@ export function App(): JSX.Element {
                 </RequireRole>
               }
             />
+
             <Route
               path="/clients/new"
               element={
@@ -108,6 +166,7 @@ export function App(): JSX.Element {
                 </RequireRole>
               }
             />
+
             <Route
               path="/clients/:clientId"
               element={
@@ -116,6 +175,7 @@ export function App(): JSX.Element {
                 </RequireRole>
               }
             />
+
             <Route
               path="/clients/:clientId/edit"
               element={
@@ -125,6 +185,7 @@ export function App(): JSX.Element {
               }
             />
 
+            {/* Proyectos */}
             <Route
               path="/projects"
               element={
@@ -133,6 +194,7 @@ export function App(): JSX.Element {
                 </RequireRole>
               }
             />
+
             <Route
               path="/projects/new"
               element={
@@ -141,6 +203,7 @@ export function App(): JSX.Element {
                 </RequireRole>
               }
             />
+
             <Route
               path="/projects/:projectId"
               element={
@@ -149,6 +212,7 @@ export function App(): JSX.Element {
                 </RequireRole>
               }
             />
+
             <Route
               path="/projects/:projectId/edit"
               element={
@@ -157,6 +221,8 @@ export function App(): JSX.Element {
                 </RequireRole>
               }
             />
+
+            {/* Editor 2D/3D */}
             <Route
               path="/projects/:projectId/design"
               element={
@@ -165,7 +231,13 @@ export function App(): JSX.Element {
                 </RequireRole>
               }
             />
-            <Route path="/design-editor" element={<Navigate to="/projects" replace />} />
+
+            <Route
+              path="/design-editor"
+              element={<Navigate to="/projects" replace />}
+            />
+
+            {/* Renders */}
             <Route
               path="/projects/:projectId/renders"
               element={
@@ -174,6 +246,7 @@ export function App(): JSX.Element {
                 </RequireRole>
               }
             />
+
             <Route
               path="/projects/:projectId/renders/new"
               element={
@@ -182,6 +255,7 @@ export function App(): JSX.Element {
                 </RequireRole>
               }
             />
+
             <Route
               path="/projects/:projectId/renders/:renderId"
               element={
@@ -190,7 +264,13 @@ export function App(): JSX.Element {
                 </RequireRole>
               }
             />
-            <Route path="/renders" element={<Navigate to="/projects" replace />} />
+
+            <Route
+              path="/renders"
+              element={<Navigate to="/projects" replace />}
+            />
+
+            {/* Despiece */}
             <Route
               path="/projects/:projectId/cutting-list"
               element={
@@ -199,7 +279,13 @@ export function App(): JSX.Element {
                 </RequireRole>
               }
             />
-            <Route path="/cutting-list" element={<Navigate to="/projects" replace />} />
+
+            <Route
+              path="/cutting-list"
+              element={<Navigate to="/projects" replace />}
+            />
+
+            {/* Cotizaciones */}
             <Route
               path="/projects/:projectId/quotes"
               element={
@@ -208,7 +294,13 @@ export function App(): JSX.Element {
                 </RequireRole>
               }
             />
-            <Route path="/quotations" element={<Navigate to="/projects" replace />} />
+
+            <Route
+              path="/quotations"
+              element={<Navigate to="/projects" replace />}
+            />
+
+            {/* Cronograma */}
             <Route
               path="/schedule"
               element={
@@ -217,6 +309,7 @@ export function App(): JSX.Element {
                 </RequireRole>
               }
             />
+
             <Route
               path="/projects/:projectId/schedule"
               element={
@@ -225,6 +318,8 @@ export function App(): JSX.Element {
                 </RequireRole>
               }
             />
+
+            {/* Alertas */}
             <Route
               path="/alerts"
               element={
@@ -233,6 +328,7 @@ export function App(): JSX.Element {
                 </RequireRole>
               }
             />
+
             <Route
               path="/projects/:projectId/alerts"
               element={
@@ -242,6 +338,7 @@ export function App(): JSX.Element {
               }
             />
 
+            {/* Módulos aún no implementados */}
             {placeholderRoutes.map((route) => (
               <Route
                 key={route.path}
@@ -251,7 +348,10 @@ export function App(): JSX.Element {
             ))}
           </Route>
 
-          <Route path="*" element={<Navigate to="/dashboard" replace />} />
+          <Route
+            path="*"
+            element={<Navigate to="/dashboard" replace />}
+          />
         </Routes>
       </HashRouter>
     </QueryClientProvider>

@@ -1,4 +1,4 @@
-import { ArrowLeft, Save, UserPlus } from 'lucide-react';
+import { ArrowLeft, CalendarDays, MapPin, Save, UserPlus } from 'lucide-react';
 import { FormEvent, useEffect, useState } from 'react';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { ProjectStatus } from '@shared/constants/domain.enums';
@@ -13,6 +13,7 @@ import {
   useProjectQuery,
   useUpdateProjectMutation
 } from './project.queries';
+import './projects.css';
 
 interface ProjectFormState {
   name: string;
@@ -101,105 +102,131 @@ export function ProjectForm({
   }
 
   return (
-    <section className="page-panel" aria-labelledby="project-form-title">
-      <div className="module-page-header">
+    <section className="project-form-page" aria-labelledby="project-form-title">
+      <header className="project-form-header">
+        <Link
+          className="project-form-back"
+          to={initialProject ? `/projects/${initialProject.id}` : '/projects'}
+        >
+          <ArrowLeft size={18} aria-hidden="true" /> Volver
+        </Link>
         <div>
-          <Link
-            className="back-link"
-            to={initialProject ? `/projects/${initialProject.id}` : '/projects'}
-          >
-            <ArrowLeft size={17} aria-hidden="true" /> Volver
-          </Link>
-          <p className="page-eyebrow">Información general</p>
-          <h2 id="project-form-title">{title}</h2>
-          <p>{description}</p>
+          <p>{initialProject ? 'Editar proyecto' : 'Nuevo proyecto'}</p>
+          <h1 id="project-form-title">{title}</h1>
+          <span>{description}</span>
         </div>
-      </div>
+      </header>
 
-      <form className="entity-form" onSubmit={(event) => void handleSubmit(event)} noValidate>
-        <fieldset className="form-section">
-          <legend>Información general</legend>
-          <div className="form-grid two-columns">
-            <label className="span-two">
-              Nombre del proyecto <span aria-hidden="true">*</span>
-              <input
-                value={form.name}
-                onChange={(event) => updateField('name', event.target.value)}
-                aria-invalid={Boolean(errors.name)}
-                autoFocus
-              />
-              {fieldError(errors, 'name')}
-            </label>
+      <form className="project-figma-form" onSubmit={(event) => void handleSubmit(event)} noValidate>
+        <fieldset className="project-form-card project-general-card">
+          <legend>INFORMACIÓN GENERAL</legend>
+          <p className="project-form-card-description">
+            Introduce la información del proyecto. Después podrás modificar estos datos desde el
+            expediente.
+          </p>
 
-            <label>
-              Fecha de inicio <span aria-hidden="true">*</span>
-              <input
-                type="date"
-                value={form.startDate}
-                onChange={(event) => updateField('startDate', event.target.value)}
-                aria-invalid={Boolean(errors.startDate)}
-              />
-              {fieldError(errors, 'startDate')}
-            </label>
+          <div className="project-general-layout">
+            <div className="project-general-fields">
+              <label>
+                Nombre
+                <input
+                  value={form.name}
+                  onChange={(event) => updateField('name', event.target.value)}
+                  aria-invalid={Boolean(errors.name)}
+                  placeholder="Nombre del proyecto"
+                  autoFocus
+                />
+                {fieldError(errors, 'name')}
+              </label>
 
-            <label>
-              Fecha estimada de entrega
-              <input
-                type="date"
-                value={form.deliveryDate}
-                onChange={(event) => updateField('deliveryDate', event.target.value)}
-                aria-invalid={Boolean(errors.deliveryDate)}
-              />
-              {fieldError(errors, 'deliveryDate')}
-            </label>
+              <div className="project-date-grid">
+                <label>
+                  <span>
+                    <CalendarDays size={16} aria-hidden="true" /> Fecha de inicio
+                  </span>
+                  <input
+                    type="date"
+                    value={form.startDate}
+                    onChange={(event) => updateField('startDate', event.target.value)}
+                    aria-invalid={Boolean(errors.startDate)}
+                  />
+                  {fieldError(errors, 'startDate')}
+                </label>
 
-            <label className="span-two">
-              Ubicación
-              <input
-                value={form.location}
-                onChange={(event) => updateField('location', event.target.value)}
-                aria-invalid={Boolean(errors.location)}
-                placeholder="Ej. Hermosillo, Sonora"
-              />
-              {fieldError(errors, 'location')}
-            </label>
+                <label>
+                  Fecha de entrega
+                  <input
+                    type="date"
+                    value={form.deliveryDate}
+                    onChange={(event) => updateField('deliveryDate', event.target.value)}
+                    aria-invalid={Boolean(errors.deliveryDate)}
+                  />
+                  {fieldError(errors, 'deliveryDate')}
+                </label>
+              </div>
 
-            <label>
-              Estado
-              <select
-                value={form.status}
-                onChange={(event) => updateField('status', event.target.value as ProjectStatus)}
-                disabled={!initialProject}
-              >
-                {Object.values(ProjectStatus).map((status) => (
-                  <option key={status} value={status}>
-                    {PROJECT_STATUS_LABEL[status]}
-                  </option>
-                ))}
-              </select>
-              {!initialProject ? (
-                <small>Los proyectos nuevos comienzan como borrador.</small>
+              {initialProject ? (
+                <label>
+                  Estado
+                  <select
+                    value={form.status}
+                    onChange={(event) => updateField('status', event.target.value as ProjectStatus)}
+                  >
+                    {Object.values(ProjectStatus).map((status) => (
+                      <option key={status} value={status}>
+                        {PROJECT_STATUS_LABEL[status]}
+                      </option>
+                    ))}
+                  </select>
+                </label>
               ) : null}
-            </label>
 
-            <label className="span-two">
-              Descripción
-              <textarea
-                rows={4}
-                value={form.description}
-                onChange={(event) => updateField('description', event.target.value)}
-                aria-invalid={Boolean(errors.description)}
-              />
-              {fieldError(errors, 'description')}
-            </label>
+              <label>
+                Descripción
+                <textarea
+                  rows={5}
+                  value={form.description}
+                  onChange={(event) => updateField('description', event.target.value)}
+                  aria-invalid={Boolean(errors.description)}
+                  placeholder="Describe brevemente el alcance del proyecto"
+                />
+                {fieldError(errors, 'description')}
+              </label>
+            </div>
+
+            <div className="project-location-panel">
+              <h2>Seleccionar ubicación</h2>
+              <label>
+                Dirección o ubicación
+                <input
+                  value={form.location}
+                  onChange={(event) => updateField('location', event.target.value)}
+                  aria-invalid={Boolean(errors.location)}
+                  placeholder="Ej. Hermosillo, Sonora"
+                />
+                {fieldError(errors, 'location')}
+              </label>
+
+              <div className="project-location-preview" aria-label="Vista previa de ubicación">
+                <div className="project-map-grid" aria-hidden="true" />
+                <MapPin size={48} strokeWidth={1.8} aria-hidden="true" />
+                <strong>{form.location.trim() || 'Ubicación del proyecto'}</strong>
+                <span>La integración de mapa puede conectarse después a un proveedor de mapas.</span>
+              </div>
+            </div>
           </div>
         </fieldset>
 
-        <fieldset className="form-section">
-          <legend>Datos del cliente</legend>
-          <div className="client-selector-row">
+        <fieldset className="project-form-card project-client-card">
+          <legend>DATOS DEL CLIENTE</legend>
+          <p className="project-form-card-description">
+            Selecciona el cliente asociado al proyecto. Sus datos permanecen administrados desde el
+            módulo de Clientes.
+          </p>
+
+          <div className="project-client-selector">
             <label>
-              Cliente asociado <span aria-hidden="true">*</span>
+              Cliente asociado
               <select
                 value={form.clientId}
                 onChange={(event) => updateField('clientId', event.target.value)}
@@ -220,31 +247,27 @@ export function ProjectForm({
             </label>
 
             {!initialProject ? (
-              <Link
-                className="secondary-link-button compact-button"
-                to="/clients/new?returnTo=%2Fprojects%2Fnew"
-              >
-                <UserPlus size={17} aria-hidden="true" />
-                Crear cliente
+              <Link className="project-create-client-button" to="/clients/new?returnTo=%2Fprojects%2Fnew">
+                <UserPlus size={18} aria-hidden="true" /> Crear cliente
               </Link>
             ) : null}
           </div>
         </fieldset>
 
         {submitError ? (
-          <div className="form-message error-message" role="alert">
+          <div className="project-form-message project-form-message--error" role="alert">
             {submitError}
           </div>
         ) : null}
 
-        <div className="form-actions">
+        <div className="project-form-actions">
           <Link
-            className="ghost-link-button"
+            className="project-form-cancel"
             to={initialProject ? `/projects/${initialProject.id}` : '/projects'}
           >
             Cancelar
           </Link>
-          <button className="primary-button inline-button" type="submit" disabled={isSubmitting}>
+          <button className="project-form-submit" type="submit" disabled={isSubmitting}>
             <Save size={18} aria-hidden="true" />
             {isSubmitting ? 'Guardando...' : submitLabel}
           </button>
@@ -284,15 +307,13 @@ export function EditProjectPage(): JSX.Element {
   const updateMutation = useUpdateProjectMutation(projectId ?? '');
 
   if (projectQuery.isLoading) {
-    return <section className="page-panel state-card">Cargando proyecto...</section>;
+    return <section className="projects-state-card">Cargando proyecto...</section>;
   }
 
   if (projectQuery.isError || !projectQuery.data || !projectId) {
     return (
-      <section className="page-panel">
-        <div className="state-card state-card-error" role="alert">
-          {getErrorMessage(projectQuery.error)}
-        </div>
+      <section className="projects-state-card projects-state-card--error" role="alert">
+        {getErrorMessage(projectQuery.error)}
       </section>
     );
   }

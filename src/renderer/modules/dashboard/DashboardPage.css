@@ -1,0 +1,243 @@
+.dashboard-page {
+    min-height: 100%;
+    margin: 0;
+    background: #efe7d4;
+}
+
+.dashboard-hero {
+    min-height: 665px;
+    background: #36251c;
+}
+
+.dashboard-hero-content {
+    min-height: 665px;
+    display: grid;
+    grid-template-columns: minmax(460px, 48.5%) minmax(0, 51.5%);
+}
+
+.dashboard-copy {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 72px 70px 72px clamp(70px, 9vw, 140px);
+    color: #ffffff;
+    background: #36251c;
+}
+
+.dashboard-copy h1 {
+    max-width: 690px;
+    margin: 0;
+    color: #ffffff;
+    font-size: clamp(2.8rem, 4.1vw, 4rem);
+    font-weight: 800;
+    line-height: 1.08;
+    letter-spacing: -0.035em;
+}
+
+.dashboard-divider {
+    width: 104px;
+    height: 6px;
+    margin: 84px 0 28px;
+    background: #cbb087;
+}
+
+.dashboard-copy p {
+    max-width: 565px;
+    margin: 0;
+    color: #f4efe9;
+    font-size: 1.25rem;
+    line-height: 1.25;
+}
+
+.dashboard-control-button {
+    width: fit-content;
+    min-width: 355px;
+    margin-top: 54px;
+    padding: 15px 38px;
+    border: 0;
+    border-radius: 0;
+    color: #ffffff;
+    background: #c4a77c;
+    font-size: 1.15rem;
+    font-weight: 400;
+    text-transform: uppercase;
+    transition:
+        background 160ms ease,
+        transform 160ms ease;
+}
+
+.dashboard-control-button:hover {
+    background: #d0b487;
+    transform: translateY(-1px);
+}
+
+.dashboard-control-button:focus-visible {
+    outline: 3px solid #ffffff;
+    outline-offset: 4px;
+}
+
+
+.dashboard-image {
+  position: relative;
+  min-width: 0;
+
+  background:
+    linear-gradient(rgb(30 22 18 / 24%), rgb(30 22 18 / 24%)),
+    url('../../assets/dashboard-kitchen.png');
+
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.dashboard-image-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgb(21 14 10 / 10%);
+    pointer-events: none;
+}
+
+.dashboard-metrics {
+    min-height: 230px;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    background: #f1e9d5;
+    border-top: 1px solid rgb(54 37 28 / 12%);
+}
+
+.dashboard-metric {
+    min-width: 0;
+    display: grid;
+    place-items: center;
+    align-content: center;
+    gap: 13px;
+    padding: 26px 20px 30px;
+    color: #332b27;
+    text-align: center;
+    border-right: 2px solid rgb(54 37 28 / 16%);
+}
+
+.dashboard-metric:last-child {
+    border-right: 0;
+}
+
+.dashboard-metric svg {
+    color: #332b27;
+}
+
+.dashboard-metric h2 {
+    min-height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    color: #332b27;
+    font-size: clamp(1rem, 1.45vw, 1.28rem);
+    font-weight: 800;
+    line-height: 1.1;
+    text-transform: uppercase;
+}
+
+.dashboard-metric strong {
+    min-width: 82px;
+    padding: 10px 24px;
+    color: #f7f0df;
+    background: #332b27;
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.dashboard-state {
+    grid-column: 1 / -1;
+    display: grid;
+    place-items: center;
+    min-height: 230px;
+    padding: 30px;
+    color: #332b27;
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.dashboard-state-error {
+    color: #9e332b;
+}
+
+@media (max-width: 1150px) {
+
+    .dashboard-hero,
+    .dashboard-hero-content {
+        min-height: 610px;
+    }
+
+    .dashboard-copy {
+        padding-left: 60px;
+        padding-right: 50px;
+    }
+
+    .dashboard-control-button {
+        min-width: 0;
+    }
+}
+
+@media (max-width: 900px) {
+    .dashboard-hero-content {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-copy {
+        min-height: 500px;
+        padding: 60px 42px;
+    }
+
+    .dashboard-divider {
+        margin-top: 52px;
+    }
+
+    .dashboard-image {
+        min-height: 390px;
+    }
+
+    .dashboard-metrics {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .dashboard-metric:nth-child(2) {
+        border-right: 0;
+    }
+
+    .dashboard-metric:nth-child(-n + 2) {
+        border-bottom: 2px solid rgb(54 37 28 / 16%);
+    }
+}
+
+@media (max-width: 600px) {
+    .dashboard-copy {
+        padding: 48px 28px;
+    }
+
+    .dashboard-copy h1 {
+        font-size: 2.5rem;
+    }
+
+    .dashboard-copy p {
+        font-size: 1.05rem;
+    }
+
+    .dashboard-control-button {
+        width: 100%;
+    }
+
+    .dashboard-metrics {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-metric {
+        border-right: 0;
+        border-bottom: 2px solid rgb(54 37 28 / 16%);
+    }
+
+    .dashboard-metric:last-child {
+        border-bottom: 0;
+    }
+}

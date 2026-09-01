@@ -1,0 +1,41 @@
+.main-layout {
+    width: 100%;
+    min-width: 0;
+    min-height: 100vh;
+
+    display: grid;
+    grid-template-rows: auto 1fr;
+
+    background: #f3eee4;
+}
+
+/*
+ * Las pantallas normales mantienen espacio alrededor
+ * de su contenido.
+ */
+.main-layout-content {
+    min-width: 0;
+    width: 100%;
+    padding: 24px;
+
+    background: #f3eee4;
+}
+
+/*
+ * El dashboard del Figma ocupa todo el ancho disponible
+ * debajo de la navegación.
+ */
+.main-layout-content--dashboard {
+    padding: 0;
+    background: #efe7d4;
+}
+
+@media (max-width: 900px) {
+    .main-layout-content {
+        padding: 18px;
+    }
+
+    .main-layout-content--dashboard {
+        padding: 0;
+    }
+}

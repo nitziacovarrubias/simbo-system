@@ -6,6 +6,7 @@ import { ROOM_LAYOUT_LABEL } from '@renderer/utils/domain-labels';
 import { getFormErrors, type FormErrors } from '@renderer/utils/form-errors';
 import { getErrorMessage } from '@renderer/utils/formatters';
 import { useSaveRoomSpaceMutation } from './project.queries';
+import './projects.css';
 
 interface RoomSpaceFormState {
   layoutType: RoomLayoutType;
@@ -89,19 +90,20 @@ export function RoomSpaceForm({ projectId, initialRoomSpace }: RoomSpaceFormProp
   }
 
   return (
-    <form className="room-space-form" onSubmit={(event) => void handleSubmit(event)} noValidate>
-      <div className="room-space-heading">
+    <form className="project-room-form" onSubmit={(event) => void handleSubmit(event)} noValidate>
+      <div className="project-room-heading">
+        <div className="project-room-icon">
+          <Ruler size={28} aria-hidden="true" />
+        </div>
         <div>
-          <p className="page-eyebrow">Captura de medidas</p>
-          <h3>
-            <Ruler size={21} aria-hidden="true" /> Espacio del proyecto
-          </h3>
-          <p>Registra las dimensiones físicas en milímetros para preparar el editor 2D/3D.</p>
+          <p>Captura de medidas</p>
+          <h3>ESPACIO DEL PROYECTO</h3>
+          <span>Registra las dimensiones físicas en milímetros para preparar el editor 2D/3D.</span>
         </div>
       </div>
 
-      <div className="form-grid two-columns">
-        <label className="span-two">
+      <div className="project-room-grid">
+        <label className="project-room-span-two">
           Tipo de plano
           <select
             value={form.layoutType}
@@ -117,7 +119,7 @@ export function RoomSpaceForm({ projectId, initialRoomSpace }: RoomSpaceFormProp
         </label>
 
         <label>
-          Ancho en mm <span aria-hidden="true">*</span>
+          Ancho en mm
           <input
             type="number"
             min="1"
@@ -131,7 +133,7 @@ export function RoomSpaceForm({ projectId, initialRoomSpace }: RoomSpaceFormProp
         </label>
 
         <label>
-          Largo / profundidad en mm <span aria-hidden="true">*</span>
+          Largo / profundidad en mm
           <input
             type="number"
             min="1"
@@ -145,7 +147,7 @@ export function RoomSpaceForm({ projectId, initialRoomSpace }: RoomSpaceFormProp
         </label>
 
         <label>
-          Alto en mm <span aria-hidden="true">*</span>
+          Alto en mm
           <input
             type="number"
             min="1"
@@ -172,7 +174,7 @@ export function RoomSpaceForm({ projectId, initialRoomSpace }: RoomSpaceFormProp
           {fieldError(errors, 'wallThicknessMm')}
         </label>
 
-        <label className="span-two">
+        <label className="project-room-span-two">
           Notas del espacio
           <textarea
             rows={4}
@@ -185,36 +187,28 @@ export function RoomSpaceForm({ projectId, initialRoomSpace }: RoomSpaceFormProp
         </label>
       </div>
 
-      <p className="form-help">
-        Las medidas deben ser numéricas, mayores a cero y coherentes con el espacio.
-      </p>
-
       {saveMutation.isError ? (
-        <div className="form-message error-message" role="alert">
+        <div className="project-form-message project-form-message--error" role="alert">
           {getErrorMessage(saveMutation.error)}
         </div>
       ) : null}
       {successMessage ? (
-        <div className="form-message success-message" role="status">
+        <div className="project-form-message project-form-message--success" role="status">
           {successMessage}
         </div>
       ) : null}
 
-      <div className="form-actions">
-        <button
-          className="primary-button inline-button"
-          type="submit"
-          disabled={saveMutation.isPending}
-        >
+      <div className="project-room-actions">
+        <button type="submit" disabled={saveMutation.isPending}>
           <Save size={18} aria-hidden="true" />
           {saveMutation.isPending ? 'Guardando...' : 'Guardar medidas'}
         </button>
       </div>
 
       {initialRoomSpace ? (
-        <div className="room-summary" aria-label="Resumen de medidas guardadas">
+        <div className="project-room-summary" aria-label="Resumen de medidas guardadas">
           <h4>Resumen de medidas guardadas</h4>
-          <div className="room-summary-grid">
+          <div>
             <span>
               <strong>Plano:</strong> {ROOM_LAYOUT_LABEL[initialRoomSpace.layoutType]}
             </span>

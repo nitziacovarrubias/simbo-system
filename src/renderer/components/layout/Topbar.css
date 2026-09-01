@@ -1,0 +1,334 @@
+.main-topbar {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+
+    width: 100%;
+    height: 104px;
+
+    display: grid;
+    grid-template-columns:
+        minmax(220px, 1fr) auto minmax(220px, 1fr);
+
+    align-items: center;
+
+    padding: 0 clamp(36px, 5vw, 82px);
+
+    color: #3b2b23;
+    background: #f1e7d3;
+
+    border-bottom: 1px solid rgb(59 43 35 / 18%);
+}
+
+/* Marca SIMBO */
+
+.main-topbar-brand {
+    justify-self: start;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+
+    color: #3b2b23;
+    text-decoration: none;
+}
+
+.main-topbar-logo {
+  width: 58px;
+  height: 58px;
+  flex: 0 0 auto;
+  object-fit: contain;
+
+  filter: brightness(0) saturate(100%);
+}
+.main-topbar-brand span {
+    font-size: 1.65rem;
+    font-weight: 500;
+    letter-spacing: 0.13em;
+}
+
+/* Navegación */
+
+.main-topbar-navigation {
+    justify-self: center;
+
+    display: flex;
+    align-items: center;
+    gap: clamp(38px, 5vw, 78px);
+
+    height: 100%;
+}
+
+.main-topbar-link {
+    position: relative;
+
+    height: 100%;
+
+    display: flex;
+    align-items: center;
+
+    color: #4a382e;
+
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: 0.035em;
+    text-transform: uppercase;
+
+    transition:
+        color 150ms ease,
+        opacity 150ms ease;
+}
+
+.main-topbar-link::after {
+    content: '';
+
+    position: absolute;
+    right: 0;
+    bottom: 26px;
+    left: 0;
+
+    height: 2px;
+
+    opacity: 0;
+    transform: scaleX(0);
+
+    background: #a98d64;
+
+    transition:
+        opacity 160ms ease,
+        transform 160ms ease;
+}
+
+.main-topbar-link:hover {
+    color: #9b7c52;
+}
+
+.main-topbar-link.is-active {
+    color: #8e704b;
+}
+
+.main-topbar-link.is-active::after {
+    opacity: 1;
+    transform: scaleX(1);
+}
+
+/* Configuración */
+
+.main-topbar-settings {
+    position: relative;
+
+    justify-self: end;
+}
+
+.main-topbar-settings-button {
+    width: 52px;
+    height: 52px;
+
+    display: grid;
+    place-items: center;
+
+    padding: 0;
+
+    border: 0;
+    border-radius: 50%;
+
+    color: #3b2b23;
+    background: transparent;
+
+    transition:
+        background 150ms ease,
+        transform 150ms ease;
+}
+
+.main-topbar-settings-button:hover {
+    background: rgb(59 43 35 / 8%);
+}
+
+.main-topbar-settings-button:active {
+    transform: scale(0.96);
+}
+
+.main-topbar-settings-button:focus-visible {
+    outline: 3px solid rgb(169 141 100 / 45%);
+    outline-offset: 3px;
+}
+
+/* Menú desplegable */
+
+.main-topbar-menu {
+    position: absolute;
+    top: calc(100% + 14px);
+    right: 0;
+
+    width: 280px;
+
+    overflow: hidden;
+
+    padding: 14px;
+
+    border: 1px solid rgb(59 43 35 / 12%);
+    border-radius: 12px;
+
+    color: #3b2b23;
+    background: #fffdf8;
+
+    box-shadow:
+        0 20px 50px rgb(54 37 28 / 16%),
+        0 4px 12px rgb(54 37 28 / 7%);
+}
+
+.main-topbar-menu::before {
+    content: '';
+
+    position: absolute;
+
+    top: -7px;
+    right: 19px;
+
+    width: 14px;
+    height: 14px;
+
+    transform: rotate(45deg);
+
+    border-top: 1px solid rgb(59 43 35 / 12%);
+    border-left: 1px solid rgb(59 43 35 / 12%);
+
+    background: #fffdf8;
+}
+
+.main-topbar-user {
+    position: relative;
+    z-index: 1;
+
+    display: grid;
+    justify-items: start;
+    gap: 7px;
+
+    padding: 6px 6px 12px;
+}
+
+.main-topbar-user-label {
+    color: #89786a;
+
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+}
+
+.main-topbar-user strong {
+    max-width: 100%;
+
+    overflow: hidden;
+
+    color: #3b2b23;
+
+    font-size: 0.96rem;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.main-topbar-menu-divider {
+    height: 1px;
+
+    margin: 4px 0 8px;
+
+    background: rgb(59 43 35 / 10%);
+}
+
+.main-topbar-menu-item {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    gap: 11px;
+
+    padding: 11px 10px;
+
+    border: 0;
+    border-radius: 8px;
+
+    color: #4a382e;
+    background: transparent;
+
+    font-size: 0.91rem;
+    font-weight: 600;
+
+    text-align: left;
+
+    transition: background 140ms ease;
+}
+
+.main-topbar-menu-item:hover {
+    background: #f2eadb;
+}
+
+.main-topbar-menu-item--logout {
+    color: #a64c42;
+}
+
+.main-topbar-menu-item--logout:hover {
+    background: #f9e8e4;
+}
+
+.main-topbar-version {
+    margin-top: 8px;
+    padding: 9px 8px 2px;
+
+    color: #998b80;
+
+    font-size: 0.72rem;
+    text-align: center;
+}
+
+/* Responsive */
+
+@media (max-width: 1100px) {
+    .main-topbar {
+        grid-template-columns:
+            minmax(180px, 1fr) auto minmax(100px, 1fr);
+
+        padding: 0 34px;
+    }
+
+    .main-topbar-navigation {
+        gap: 32px;
+    }
+
+    .main-topbar-brand span {
+        font-size: 1.4rem;
+    }
+}
+
+@media (max-width: 760px) {
+    .main-topbar {
+        height: auto;
+
+        grid-template-columns: 1fr auto;
+
+        padding: 15px 20px;
+    }
+
+    .main-topbar-navigation {
+        grid-column: 1 / -1;
+        grid-row: 2;
+
+        width: 100%;
+
+        justify-content: center;
+        gap: 24px;
+
+        margin-top: 8px;
+    }
+
+    .main-topbar-link {
+        min-height: 46px;
+
+        font-size: 0.8rem;
+    }
+
+    .main-topbar-link::after {
+        bottom: 3px;
+    }
+}
