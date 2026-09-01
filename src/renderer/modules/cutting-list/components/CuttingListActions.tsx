@@ -1,5 +1,11 @@
 import { useState } from 'react';
-import { CheckCircle2, Download, Plus, XCircle } from 'lucide-react';
+import {
+  CheckCircle2,
+  Download,
+  Pencil,
+  Plus,
+  XCircle
+} from 'lucide-react';
 
 interface CuttingListActionsProps {
   isReadOnly: boolean;
@@ -15,17 +21,73 @@ export function CuttingListActions(props: CuttingListActionsProps): JSX.Element 
   const [notes, setNotes] = useState('');
 
   return (
-    <section className="cutting-list-actions" aria-label="Acciones del despiece">
-      <div className="cutting-action-buttons">
-        <button type="button" className="secondary-link-button" disabled={props.isReadOnly || props.isBusy} onClick={props.onAdd}><Plus size={18} />Agregar pieza manual</button>
-        <button type="button" className="accent-button" disabled={!props.canAuthorize || props.isBusy} onClick={() => props.onAuthorize(notes)}><CheckCircle2 size={18} />Autorizar lista</button>
-        <button type="button" className="danger-button" disabled={props.isBusy || notes.trim().length === 0} onClick={() => props.onReject(notes)}><XCircle size={18} />Rechazar lista</button>
-        <button type="button" className="secondary-link-button" disabled={props.isBusy} onClick={props.onExport}><Download size={18} />Exportar Excel</button>
+    <section
+      className="cutting-list-actions"
+      aria-label="Acciones del despiece"
+    >
+      <div className="cutting-list-actions__primary">
+        <button
+          type="button"
+          className="cutting-outline-button"
+          disabled={props.isReadOnly || props.isBusy}
+          onClick={props.onAdd}
+        >
+          <Pencil size={18} aria-hidden="true" />
+          Editar / agregar pieza
+        </button>
+
+        <button
+          type="button"
+          className="cutting-export-button"
+          disabled={props.isBusy}
+          onClick={props.onExport}
+        >
+          <Download size={18} aria-hidden="true" />
+          Descargar (.XLS)
+        </button>
       </div>
-      <label>
-        Nota u observación
-        <textarea rows={2} value={notes} onChange={(event) => setNotes(event.target.value)} placeholder="La nota es obligatoria para rechazar." />
+
+      <label className="cutting-validation-note">
+        <span>Nota u observación</span>
+        <textarea
+          rows={2}
+          value={notes}
+          onChange={(event) => setNotes(event.target.value)}
+          placeholder="La nota es obligatoria para rechazar."
+        />
       </label>
+
+      <div className="cutting-list-actions__validation">
+        <button
+          type="button"
+          className="cutting-add-button"
+          disabled={props.isReadOnly || props.isBusy}
+          onClick={props.onAdd}
+        >
+          <Plus size={17} aria-hidden="true" />
+          Agregar pieza manual
+        </button>
+
+        <button
+          type="button"
+          className="cutting-reject-button"
+          disabled={props.isBusy || notes.trim().length === 0}
+          onClick={() => props.onReject(notes)}
+        >
+          <XCircle size={17} aria-hidden="true" />
+          Rechazar lista
+        </button>
+
+        <button
+          type="button"
+          className="cutting-authorize-button"
+          disabled={!props.canAuthorize || props.isBusy}
+          onClick={() => props.onAuthorize(notes)}
+        >
+          <CheckCircle2 size={17} aria-hidden="true" />
+          Autorizar lista
+        </button>
+      </div>
     </section>
   );
 }

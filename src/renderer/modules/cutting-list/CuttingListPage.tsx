@@ -23,6 +23,8 @@ import {
   useUpdateCuttingPieceMutation
 } from './hooks/useCuttingListQueries';
 
+import './cutting-list.css';
+
 const STATUS_LABELS: Record<string, string> = {
   DRAFT: 'Borrador',
   PENDING_VALIDATION: 'Pendiente de validación',
@@ -39,7 +41,10 @@ export function CuttingListPage(): JSX.Element {
     queryFn: () => window.simboApi.getDesignByProjectId(projectId ?? ''),
     enabled: Boolean(projectId)
   });
-  const materialsQuery = useQuery({ queryKey: ['materials'], queryFn: () => window.simboApi.listMaterials() });
+  const materialsQuery = useQuery({
+    queryKey: ['materials'],
+    queryFn: () => window.simboApi.listMaterials()
+  });
   const listsQuery = useCuttingListsByProjectQuery(projectId);
   const [selectedId, setSelectedId] = useState('');
   const selectedQuery = useCuttingListQuery(selectedId || undefined);
@@ -48,7 +53,9 @@ export function CuttingListPage(): JSX.Element {
   const [message, setMessage] = useState('');
 
   useEffect(() => {
-    if (!selectedId && listsQuery.data?.[0]) setSelectedId(listsQuery.data[0].id);
+    if (!selectedId && listsQuery.data?.[0]) {
+      setSelectedId(listsQuery.data[0].id);
+    }
   }, [listsQuery.data, selectedId]);
 
   const design = designQuery.data;
@@ -60,24 +67,57 @@ export function CuttingListPage(): JSX.Element {
   const authorizeMutation = useAuthorizeCuttingListMutation(projectId ?? '', list?.id ?? '');
   const rejectMutation = useRejectCuttingListMutation(projectId ?? '', list?.id ?? '');
   const exportMutation = useExportCuttingListMutation(projectId ?? '', list?.id ?? '');
-  const busy = [updateMutation, addMutation, removeMutation, authorizeMutation, rejectMutation, exportMutation].some((mutation) => mutation.isPending);
-  const error = [projectQuery.error, designQuery.error, listsQuery.error, selectedQuery.error, generateMutation.error, updateMutation.error, addMutation.error, removeMutation.error, authorizeMutation.error, rejectMutation.error, exportMutation.error].find(Boolean);
+
+  const busy = [
+    updateMutation,
+    addMutation,
+    removeMutation,
+    authorizeMutation,
+    rejectMutation,
+    exportMutation
+  ].some((mutation) => mutation.isPending);
+
+  const error = [
+    projectQuery.error,
+    designQuery.error,
+    listsQuery.error,
+    selectedQuery.error,
+    generateMutation.error,
+    updateMutation.error,
+    addMutation.error,
+    removeMutation.error,
+    authorizeMutation.error,
+    rejectMutation.error,
+    exportMutation.error
+  ].find(Boolean);
+
   const isReadOnly = list?.status === 'AUTHORIZED' || list?.status === 'OUTDATED';
-  const canAuthorize = Boolean(list && list.pieces.length > 0 && !list.isDesignOutdated && list.status !== 'AUTHORIZED');
+  const canAuthorize = Boolean(
+    list &&
+      list.pieces.length > 0 &&
+      !list.isDesignOutdated &&
+      list.status !== 'AUTHORIZED'
+  );
 
   const projectName = projectQuery.data?.name ?? 'Proyecto';
   const clientName = projectQuery.data?.client.fullName ?? 'Cliente';
   const designStatus = design ? `${design.status} · v${design.version}` : 'Sin diseño vigente';
   const lists = listsQuery.data ?? [];
 
-  const selectedSummary = useMemo(() => lists.find((item) => item.id === selectedId), [lists, selectedId]);
+  const selectedSummary = useMemo(
+    () => lists.find((item) => item.id === selectedId),
+    [lists, selectedId]
+  );
 
   if (!projectId || projectQuery.isLoading || designQuery.isLoading || listsQuery.isLoading) {
     return <section className="page-panel state-card">Cargando módulo de despiece...</section>;
   }
 
   return (
-    <section className="page-panel cutting-list-page" aria-labelledby="cutting-list-page-title">
+    <section
+      className="cutting-list-page"
+      aria-labelledby="cutting-list-page-title"
+    >
       <CuttingListHeader
         projectId={projectId}
         projectName={projectName}
@@ -90,71 +130,169 @@ export function CuttingListPage(): JSX.Element {
           generateMutation.mutate(undefined, {
             onSuccess: (generated) => {
               setSelectedId(generated.id);
-              setMessage('La lista fue generada correctamente');
+              setMessage('La lista fue generada correctamente.');
             }
           });
         }}
       />
 
-      {message ? <div className="state-card success-message" role="status">{message}</div> : null}
-      {error ? <div className="state-card state-card-error" role="alert">{getErrorMessage(error)}</div> : null}
-
-      {!design ? (
-        <div className="state-card state-card-error"><AlertTriangle size={20} />El proyecto necesita un diseño guardado antes de generar el despiece.</div>
-      ) : null}
-
-      {lists.length === 0 ? (
-        <div className="empty-cutting-state">
-          <h3>Lista de despiece</h3>
-          <p>Aún no existen versiones. Usa “Generar lista de despiece” para calcular las piezas del diseño vigente.</p>
-        </div>
-      ) : (
-        <>
-          <div className="cutting-version-bar">
-            <CuttingListVersionSelector lists={lists} selectedId={selectedId} onChange={setSelectedId} />
-            {selectedSummary ? <span className={`status-pill status-${selectedSummary.status.toLowerCase()}`}>{STATUS_LABELS[selectedSummary.status]}</span> : null}
+      <div className="cutting-content">
+        {message ? (
+          <div className="cutting-message cutting-message--success" role="status">
+            {message}
           </div>
+        ) : null}
 
-          {!selectedSummary?.isLatestVersion ? <div className="outdated-warning"><AlertTriangle size={18} />Esta no es la última versión del despiece.</div> : null}
-          {list?.isDesignOutdated ? <div className="outdated-warning"><AlertTriangle size={18} />El diseño cambió después de generar esta lista.</div> : null}
-          {list?.status === 'AUTHORIZED' ? <div className="authorized-lock"><LockKeyhole size={18} />No se puede editar una lista autorizada.</div> : null}
+        {error ? (
+          <div className="cutting-message cutting-message--error" role="alert">
+            {getErrorMessage(error)}
+          </div>
+        ) : null}
 
-          {selectedQuery.isLoading || !list ? (
-            <div className="state-card">Cargando versión...</div>
-          ) : (
-            <>
-              <div className="cutting-list-meta">
-                <div><span>Lista de despiece</span><strong>Versión {list.versionNumber}</strong></div>
-                <div><span>Generada</span><strong>{new Date(list.generatedAt).toLocaleString('es-MX')}</strong></div>
-                <div><span>Estado</span><strong>{STATUS_LABELS[list.status]}</strong></div>
-                <div><span>Piezas</span><strong>{list.piecesCount}</strong></div>
+        {!design ? (
+          <div className="cutting-message cutting-message--error">
+            <AlertTriangle size={20} aria-hidden="true" />
+            El proyecto necesita un diseño guardado antes de generar el despiece.
+          </div>
+        ) : null}
+
+        {lists.length === 0 ? (
+          <div className="empty-cutting-state">
+            <h3>Lista de despiece</h3>
+            <p>
+              Aún no existen versiones. Usa “Generar lista de despiece” para
+              calcular las piezas del diseño vigente.
+            </p>
+          </div>
+        ) : (
+          <>
+            <div className="cutting-version-bar">
+              <CuttingListVersionSelector
+                lists={lists}
+                selectedId={selectedId}
+                onChange={setSelectedId}
+              />
+
+              {selectedSummary ? (
+                <span
+                  className={`cutting-status cutting-status--${selectedSummary.status.toLowerCase()}`}
+                >
+                  {STATUS_LABELS[selectedSummary.status]}
+                </span>
+              ) : null}
+            </div>
+
+            {!selectedSummary?.isLatestVersion ? (
+              <div className="cutting-warning">
+                <AlertTriangle size={18} aria-hidden="true" />
+                Esta no es la última versión del despiece.
               </div>
+            ) : null}
 
-              {list.notes ? <div className="cutting-observations"><strong>Observaciones del generador</strong><pre>{list.notes}</pre></div> : null}
-              {list.validationNotes ? <div className="cutting-observations"><strong>Nota de validación</strong><p>{list.validationNotes}</p></div> : null}
+            {list?.isDesignOutdated ? (
+              <div className="cutting-warning">
+                <AlertTriangle size={18} aria-hidden="true" />
+                El diseño cambió después de generar esta lista.
+              </div>
+            ) : null}
 
-              <CuttingPieceTable
-                pieces={list.pieces}
-                isReadOnly={Boolean(isReadOnly)}
-                isRemoving={removeMutation.isPending}
-                onEdit={(piece) => { setEditingPiece(piece); setShowPieceForm(true); }}
-                onRemove={(pieceId) => removeMutation.mutate(pieceId)}
-              />
+            {list?.status === 'AUTHORIZED' ? (
+              <div className="cutting-authorized">
+                <LockKeyhole size={18} aria-hidden="true" />
+                La lista está autorizada y ya no puede modificarse.
+              </div>
+            ) : null}
 
-              <MaterialSummary summaries={list.materialSummary} />
-              <CuttingListActions
-                isReadOnly={Boolean(isReadOnly)}
-                canAuthorize={canAuthorize}
-                isBusy={busy}
-                onAdd={() => { setEditingPiece(null); setShowPieceForm(true); }}
-                onAuthorize={(notes) => authorizeMutation.mutate(notes, { onSuccess: () => setMessage('La lista fue autorizada correctamente.') })}
-                onReject={(reason) => rejectMutation.mutate(reason, { onSuccess: () => setMessage('La lista fue rechazada.') })}
-                onExport={() => exportMutation.mutate(undefined, { onSuccess: (result) => setMessage(`Excel exportado: ${result.filePath}`) })}
-              />
-            </>
-          )}
-        </>
-      )}
+            {selectedQuery.isLoading || !list ? (
+              <div className="state-card">Cargando versión...</div>
+            ) : (
+              <>
+                <div className="cutting-list-meta">
+                  <div>
+                    <span>Versión</span>
+                    <strong>{list.versionNumber}</strong>
+                  </div>
+                  <div>
+                    <span>Generada</span>
+                    <strong>{new Date(list.generatedAt).toLocaleString('es-MX')}</strong>
+                  </div>
+                  <div>
+                    <span>Estado</span>
+                    <strong>{STATUS_LABELS[list.status]}</strong>
+                  </div>
+                  <div>
+                    <span>Piezas</span>
+                    <strong>{list.piecesCount}</strong>
+                  </div>
+                </div>
+
+                <MaterialSummary summaries={list.materialSummary} />
+
+                <section className="cutting-piece-section">
+                  <div className="cutting-section-heading">
+                    <div>
+                      <span>Manufactura</span>
+                      <h3>Lista de despiece</h3>
+                    </div>
+                  </div>
+
+                  {list.notes ? (
+                    <div className="cutting-observations">
+                      <strong>Observaciones del generador</strong>
+                      <pre>{list.notes}</pre>
+                    </div>
+                  ) : null}
+
+                  {list.validationNotes ? (
+                    <div className="cutting-observations">
+                      <strong>Nota de validación</strong>
+                      <p>{list.validationNotes}</p>
+                    </div>
+                  ) : null}
+
+                  <CuttingPieceTable
+                    pieces={list.pieces}
+                    isReadOnly={Boolean(isReadOnly)}
+                    isRemoving={removeMutation.isPending}
+                    onEdit={(piece) => {
+                      setEditingPiece(piece);
+                      setShowPieceForm(true);
+                    }}
+                    onRemove={(pieceId) => removeMutation.mutate(pieceId)}
+                  />
+                </section>
+
+                <CuttingListActions
+                  isReadOnly={Boolean(isReadOnly)}
+                  canAuthorize={canAuthorize}
+                  isBusy={busy}
+                  onAdd={() => {
+                    setEditingPiece(null);
+                    setShowPieceForm(true);
+                  }}
+                  onAuthorize={(notes) =>
+                    authorizeMutation.mutate(notes, {
+                      onSuccess: () =>
+                        setMessage('La lista fue autorizada correctamente.')
+                    })
+                  }
+                  onReject={(reason) =>
+                    rejectMutation.mutate(reason, {
+                      onSuccess: () => setMessage('La lista fue rechazada.')
+                    })
+                  }
+                  onExport={() =>
+                    exportMutation.mutate(undefined, {
+                      onSuccess: (result) =>
+                        setMessage(`Excel exportado: ${result.filePath}`)
+                    })
+                  }
+                />
+              </>
+            )}
+          </>
+        )}
+      </div>
 
       {showPieceForm && list ? (
         <CuttingPieceForm
@@ -164,9 +302,14 @@ export function CuttingListPage(): JSX.Element {
           onCancel={() => setShowPieceForm(false)}
           onSubmit={(input: CuttingPieceInput) => {
             if (editingPiece) {
-              updateMutation.mutate({ pieceId: editingPiece.id, input }, { onSuccess: () => setShowPieceForm(false) });
+              updateMutation.mutate(
+                { pieceId: editingPiece.id, input },
+                { onSuccess: () => setShowPieceForm(false) }
+              );
             } else {
-              addMutation.mutate(input, { onSuccess: () => setShowPieceForm(false) });
+              addMutation.mutate(input, {
+                onSuccess: () => setShowPieceForm(false)
+              });
             }
           }}
         />
