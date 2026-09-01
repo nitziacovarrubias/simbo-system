@@ -5,9 +5,13 @@ interface QuoteStatusBadgeProps {
   status: QuoteStatus;
 }
 
-export function QuoteStatusBadge({ status }: QuoteStatusBadgeProps): JSX.Element {
+export function QuoteStatusBadge({
+  status
+}: QuoteStatusBadgeProps): JSX.Element {
   return (
-    <span className={`status-pill status-${status.toLowerCase()}`}>
+    <span
+      className={`quote-status-badge quote-status-badge--${status.toLowerCase()}`}
+    >
       {QUOTE_STATUS_LABELS[status]}
     </span>
   );

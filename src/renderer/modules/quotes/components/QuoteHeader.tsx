@@ -1,4 +1,8 @@
-import { ArrowLeft, Calculator, FileSpreadsheet } from 'lucide-react';
+import {
+  ArrowLeft,
+  Calculator,
+  FileSpreadsheet
+} from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 interface QuoteHeaderProps {
@@ -23,29 +27,40 @@ export function QuoteHeader({
   onGenerate
 }: QuoteHeaderProps): JSX.Element {
   return (
-    <header className="module-page-header quote-header">
-      <div>
-        <Link className="back-link" to={`/projects/${projectId}`}>
-          <ArrowLeft size={17} aria-hidden="true" /> Volver al proyecto
-        </Link>
-        <p className="page-eyebrow">Presupuesto del proyecto</p>
-        <h2 id="quotes-page-title">Cotización</h2>
-        <p className="quote-subtitle">
-          <strong>{projectName}</strong> · {clientName} · Estado: {projectStatus}
-        </p>
-        <p className="quote-source-label">
-          <FileSpreadsheet size={16} aria-hidden="true" /> {cuttingListLabel}
-        </p>
+    <header className="quote-header">
+      <div className="quote-header__main">
+        <div>
+          <Link
+            className="quote-back-link"
+            to={`/projects/${projectId}`}
+          >
+            <ArrowLeft size={17} aria-hidden="true" />
+            Volver al proyecto
+          </Link>
+
+          <h2 id="quotes-page-title">Cotización</h2>
+        </div>
+
+        <button
+          className="quote-generate-button"
+          type="button"
+          disabled={!canGenerate || isGenerating}
+          onClick={onGenerate}
+        >
+          <Calculator size={18} aria-hidden="true" />
+          {isGenerating ? 'Generando...' : 'Generar cotización'}
+        </button>
       </div>
-      <button
-        className="accent-button"
-        type="button"
-        disabled={!canGenerate || isGenerating}
-        onClick={onGenerate}
-      >
-        <Calculator size={18} aria-hidden="true" />
-        {isGenerating ? 'Generando...' : 'Generar cotización'}
-      </button>
+
+      <div className="quote-header__project">
+        <strong>{projectName}</strong>
+        <span>{clientName}</span>
+        <span>Estado: {projectStatus}</span>
+        <span className="quote-source-label">
+          <FileSpreadsheet size={15} aria-hidden="true" />
+          {cuttingListLabel}
+        </span>
+      </div>
     </header>
   );
 }

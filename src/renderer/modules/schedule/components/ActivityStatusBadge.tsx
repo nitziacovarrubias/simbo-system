@@ -5,9 +5,13 @@ interface ActivityStatusBadgeProps {
   status: ActivityStatus;
 }
 
-export function ActivityStatusBadge({ status }: ActivityStatusBadgeProps): JSX.Element {
+export function ActivityStatusBadge({
+  status
+}: ActivityStatusBadgeProps): JSX.Element {
   return (
-    <span className={`schedule-badge schedule-status-${status.toLowerCase()}`}>
+    <span
+      className={`schedule-badge schedule-status-${status.toLowerCase()}`}
+    >
       {ACTIVITY_STATUS_LABEL[status]}
     </span>
   );

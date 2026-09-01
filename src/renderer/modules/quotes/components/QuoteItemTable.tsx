@@ -37,49 +37,69 @@ export function QuoteItemTable({
             <th>Cantidad</th>
             <th>Unidad</th>
             <th>Precio unitario</th>
-            <th>Importe</th>
+            <th>Total</th>
             <th>Comentarios</th>
-            <th>Acciones</th>
+            <th aria-label="Acciones" />
           </tr>
         </thead>
+
         <tbody>
           {items.length === 0 ? (
             <tr>
-              <td colSpan={9}>La cotización todavía no tiene conceptos.</td>
+              <td colSpan={9} className="quote-table-empty">
+                La cotización todavía no tiene conceptos.
+              </td>
             </tr>
           ) : (
             items.map((item, index) => (
               <tr key={item.id}>
-                <td>{index + 1}</td>
-                <td>
+                <td className="quote-row-number">{index + 1}.</td>
+
+                <td className="quote-item-description">
                   <strong>{item.description}</strong>
-                  {item.isManual ? <small className="manual-tag">Manual</small> : null}
+                  {item.isManual ? <small>Manual</small> : null}
                 </td>
+
                 <td>{QUOTE_ITEM_SOURCE_TYPE_LABELS[item.sourceType]}</td>
-                <td>{item.quantity.toLocaleString('es-MX', { maximumFractionDigits: 3 })}</td>
-                <td>{item.unit}</td>
-                <td>{formatMoney(item.unitPrice, currency)}</td>
-                <td><strong>{formatMoney(item.amount, currency)}</strong></td>
-                <td>{item.comments || 'Sin comentarios'}</td>
+
                 <td>
-                  <div className="table-action-group">
+                  {item.quantity.toLocaleString('es-MX', {
+                    maximumFractionDigits: 3
+                  })}
+                </td>
+
+                <td>{item.unit}</td>
+
+                <td>
+                  {formatMoney(item.unitPrice, currency)}
+                </td>
+
+                <td className="quote-amount-cell">
+                  <strong>{formatMoney(item.amount, currency)}</strong>
+                </td>
+
+                <td>{item.comments || 'Sin comentarios'}</td>
+
+                <td>
+                  <div className="quote-table-actions">
                     <button
                       type="button"
-                      className="icon-button"
+                      className="quote-icon-button"
                       aria-label={`Editar ${item.description}`}
                       disabled={isReadOnly}
                       onClick={() => onEdit(item)}
                     >
-                      <Pencil size={17} aria-hidden="true" />
+                      <Pencil size={16} aria-hidden="true" />
                     </button>
+
                     <button
                       type="button"
-                      className="icon-button danger"
+                      className="quote-icon-button quote-icon-button--danger"
                       aria-label={`Eliminar ${item.description}`}
                       disabled={isReadOnly || isRemoving}
                       onClick={() => onRemove(item.id)}
                     >
-                      <Trash2 size={17} aria-hidden="true" />
+                      <Trash2 size={16} aria-hidden="true" />
                     </button>
                   </div>
                 </td>

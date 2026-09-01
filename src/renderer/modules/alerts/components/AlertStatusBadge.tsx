@@ -5,6 +5,14 @@ interface AlertStatusBadgeProps {
   status: AlertStatus;
 }
 
-export function AlertStatusBadge({ status }: AlertStatusBadgeProps): JSX.Element {
-  return <span className={`alert-status-badge alert-status-${status.toLowerCase()}`}>{ALERT_STATUS_LABEL[status]}</span>;
+export function AlertStatusBadge({
+  status
+}: AlertStatusBadgeProps): JSX.Element {
+  return (
+    <span
+      className={`alert-status-badge alert-status-${status.toLowerCase()}`}
+    >
+      {ALERT_STATUS_LABEL[status]}
+    </span>
+  );
 }

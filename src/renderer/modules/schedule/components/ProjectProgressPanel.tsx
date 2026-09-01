@@ -4,7 +4,9 @@ interface ProjectProgressPanelProps {
   report: ProjectProgressReport;
 }
 
-export function ProjectProgressPanel({ report }: ProjectProgressPanelProps): JSX.Element {
+export function ProjectProgressPanel({
+  report
+}: ProjectProgressPanelProps): JSX.Element {
   const metrics = [
     ['Total', report.totalActivities],
     ['Pendientes', report.pendingActivities],
@@ -17,14 +19,23 @@ export function ProjectProgressPanel({ report }: ProjectProgressPanelProps): JSX
   ] as const;
 
   return (
-    <section className="schedule-progress-panel" aria-labelledby="project-progress-title">
+    <section
+      className="schedule-progress-panel"
+      aria-labelledby="project-progress-title"
+    >
       <div className="schedule-progress-heading">
         <div>
-          <p className="page-eyebrow">Reporte básico</p>
-          <h3 id="project-progress-title">Avance del proyecto</h3>
+          <span>Avance general</span>
+          <h3 id="project-progress-title">
+            Progreso del proyecto
+          </h3>
         </div>
-        <strong>{report.overallProgressPercent}%</strong>
+
+        <strong>
+          {report.overallProgressPercent}%
+        </strong>
       </div>
+
       <div
         className="schedule-progress-track"
         role="progressbar"
@@ -33,14 +44,19 @@ export function ProjectProgressPanel({ report }: ProjectProgressPanelProps): JSX
         aria-valuemax={100}
         aria-valuenow={report.overallProgressPercent}
       >
-        <span style={{ width: `${report.overallProgressPercent}%` }} />
+        <span
+          style={{
+            width: `${report.overallProgressPercent}%`
+          }}
+        />
       </div>
+
       <div className="schedule-metric-grid">
         {metrics.map(([label, value]) => (
-          <div key={label}>
+          <article key={label}>
             <span>{label}</span>
             <strong>{value}</strong>
-          </div>
+          </article>
         ))}
       </div>
     </section>

@@ -14,11 +14,16 @@ export function QuoteVersionSelector({
 }: QuoteVersionSelectorProps): JSX.Element {
   return (
     <label className="quote-version-selector">
-      Versión de cotización
-      <select value={selectedId} onChange={(event) => onChange(event.target.value)}>
+      <span>Versión de cotización</span>
+
+      <select
+        value={selectedId}
+        onChange={(event) => onChange(event.target.value)}
+      >
         {quotes.map((quote) => (
           <option key={quote.id} value={quote.id}>
-            Versión {quote.versionNumber} · {QUOTE_STATUS_LABELS[quote.status]}
+            Versión {quote.versionNumber} ·{' '}
+            {QUOTE_STATUS_LABELS[quote.status]}
           </option>
         ))}
       </select>

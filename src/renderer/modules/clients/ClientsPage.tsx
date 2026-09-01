@@ -1,119 +1,266 @@
-import { Search, UserPlus } from 'lucide-react';
+import {
+  Search,
+  SlidersHorizontal,
+  UserPlus
+} from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { ClientStatus } from '@shared/constants/domain.enums';
 import { useClientsQuery } from './client.queries';
 import { CLIENT_STATUS_LABEL } from '@renderer/utils/domain-labels';
-import { formatDate, getErrorMessage } from '@renderer/utils/formatters';
+import {
+  formatDate,
+  getErrorMessage
+} from '@renderer/utils/formatters';
+
+import './clients.css';
+
+type ClientStatusFilter = 'ALL' | ClientStatus;
 
 export function ClientsPage(): JSX.Element {
   const [search, setSearch] = useState('');
+  const [statusFilter, setStatusFilter] =
+    useState<ClientStatusFilter>('ALL');
+
   const clientsQuery = useClientsQuery();
 
   const filteredClients = useMemo(() => {
     const term = search.trim().toLowerCase();
-    if (!term) {
-      return clientsQuery.data ?? [];
-    }
 
     return (clientsQuery.data ?? []).filter((client) => {
       const searchable = [
         client.person.fullName,
         client.person.phone ?? '',
-        client.person.email ?? ''
+        client.person.email ?? '',
+        client.projectAddress ?? ''
       ]
         .join(' ')
         .toLowerCase();
-      return searchable.includes(term);
+
+      const matchesSearch =
+        !term || searchable.includes(term);
+
+      const matchesStatus =
+        statusFilter === 'ALL' ||
+        client.status === statusFilter;
+
+      return matchesSearch && matchesStatus;
     });
-  }, [clientsQuery.data, search]);
+  }, [
+    clientsQuery.data,
+    search,
+    statusFilter
+  ]);
 
   return (
-    <section className="page-panel" aria-labelledby="clients-title">
-      <div className="module-page-header">
+    <section
+      className="clients-page"
+      aria-labelledby="clients-title"
+    >
+      <header className="clients-page-header">
         <div>
-          <p className="page-eyebrow">Directorio</p>
-          <h2 id="clients-title">Clientes</h2>
-          <p>Consulta, registra y actualiza los datos de clientes de BOIS.</p>
+          <span>Directorio</span>
+          <h2 id="clients-title">
+            Listado de clientes
+          </h2>
+          <p>
+            Administra los datos, proyectos y seguimiento
+            de todos tus clientes desde un solo lugar.
+          </p>
         </div>
 
-        <Link className="primary-link-button" to="/clients/new">
-          <UserPlus size={18} aria-hidden="true" />
+        <Link
+          className="clients-new-button"
+          to="/clients/new"
+        >
+          <UserPlus
+            size={18}
+            aria-hidden="true"
+          />
           Nuevo cliente
         </Link>
-      </div>
+      </header>
 
-      <div className="toolbar-card">
-        <label className="search-field" htmlFor="client-search">
-          <Search size={18} aria-hidden="true" />
-          <input
-            id="client-search"
-            type="search"
-            value={search}
-            onChange={(event) => setSearch(event.target.value)}
-            placeholder="Buscar por nombre, teléfono o correo"
-          />
-        </label>
-        <span className="result-count">{filteredClients.length} cliente(s)</span>
-      </div>
+      <div className="clients-content">
+        <div className="clients-toolbar">
+          <div className="clients-toolbar-title">
+            <SlidersHorizontal
+              size={28}
+              aria-hidden="true"
+            />
+            <strong>Actividad</strong>
+          </div>
 
-      {clientsQuery.isLoading ? <div className="state-card">Cargando clientes...</div> : null}
+          <div className="clients-toolbar-controls">
+            <label
+              className="clients-search-field"
+              htmlFor="client-search"
+            >
+              <Search
+                size={18}
+                aria-hidden="true"
+              />
+              <input
+                id="client-search"
+                type="search"
+                value={search}
+                onChange={(event) =>
+                  setSearch(event.target.value)
+                }
+                placeholder="Buscar por nombre, teléfono, correo o dirección"
+              />
+            </label>
 
-      {clientsQuery.isError ? (
-        <div className="state-card state-card-error" role="alert">
-          {getErrorMessage(clientsQuery.error)}
+            <label className="clients-status-filter">
+              <span>Estado</span>
+              <select
+                value={statusFilter}
+                onChange={(event) =>
+                  setStatusFilter(
+                    event.target
+                      .value as ClientStatusFilter
+                  )
+                }
+              >
+                <option value="ALL">
+                  Todos
+                </option>
+
+                {Object.values(ClientStatus).map(
+                  (status) => (
+                    <option
+                      key={status}
+                      value={status}
+                    >
+                      {CLIENT_STATUS_LABEL[status]}
+                    </option>
+                  )
+                )}
+              </select>
+            </label>
+
+            <span className="clients-result-count">
+              {filteredClients.length}{' '}
+              cliente(s)
+            </span>
+          </div>
         </div>
-      ) : null}
 
-      {!clientsQuery.isLoading && !clientsQuery.isError && filteredClients.length === 0 ? (
-        <div className="state-card">
-          <h3>No hay clientes para mostrar</h3>
-          <p>Registra un cliente nuevo o cambia el criterio de búsqueda.</p>
-        </div>
-      ) : null}
+        {clientsQuery.isLoading ? (
+          <div className="clients-state-card">
+            Cargando clientes...
+          </div>
+        ) : null}
 
-      {filteredClients.length > 0 ? (
-        <div className="data-table-wrapper">
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>Cliente</th>
-                <th>Contacto</th>
-                <th>Dirección de proyecto</th>
-                <th>Proyectos</th>
-                <th>Estado</th>
-                <th>Actualizado</th>
-                <th aria-label="Acciones" />
-              </tr>
-            </thead>
-            <tbody>
-              {filteredClients.map((client) => (
-                <tr key={client.id}>
-                  <td>
-                    <strong>{client.person.fullName}</strong>
-                  </td>
-                  <td>
-                    <span>{client.person.phone ?? 'Sin teléfono'}</span>
-                    <small>{client.person.email ?? 'Sin correo'}</small>
-                  </td>
-                  <td>{client.projectAddress ?? 'Sin dirección'}</td>
-                  <td>{client.projectCount}</td>
-                  <td>
-                    <span className={`status-pill status-${client.status.toLowerCase()}`}>
-                      {CLIENT_STATUS_LABEL[client.status]}
-                    </span>
-                  </td>
-                  <td>{formatDate(client.updatedAt)}</td>
-                  <td>
-                    <Link className="table-action" to={`/clients/${client.id}`}>
-                      Ver detalle
-                    </Link>
-                  </td>
+        {clientsQuery.isError ? (
+          <div
+            className="clients-state-card clients-state-card--error"
+            role="alert"
+          >
+            {getErrorMessage(
+              clientsQuery.error
+            )}
+          </div>
+        ) : null}
+
+        {!clientsQuery.isLoading &&
+        !clientsQuery.isError &&
+        filteredClients.length === 0 ? (
+          <div className="clients-state-card">
+            <h3>
+              No hay clientes para mostrar
+            </h3>
+            <p>
+              Registra un cliente nuevo o cambia los
+              filtros.
+            </p>
+          </div>
+        ) : null}
+
+        {filteredClients.length > 0 ? (
+          <div className="clients-table-wrap">
+            <table className="clients-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Nombre</th>
+                  <th>Teléfono</th>
+                  <th>Correo electrónico</th>
+                  <th>Estado del cliente</th>
+                  <th>Proyectos realizados</th>
+                  <th>Dirección de proyecto</th>
+                  <th>Última actualización</th>
+                  <th aria-label="Acciones" />
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      ) : null}
+              </thead>
+
+              <tbody>
+                {filteredClients.map(
+                  (client, index) => (
+                    <tr key={client.id}>
+                      <td className="clients-row-number">
+                        {index + 1}
+                      </td>
+
+                      <td className="clients-name-cell">
+                        <strong>
+                          {client.person.fullName}
+                        </strong>
+                      </td>
+
+                      <td>
+                        {client.person.phone ??
+                          'Sin teléfono'}
+                      </td>
+
+                      <td>
+                        {client.person.email ??
+                          'Sin correo'}
+                      </td>
+
+                      <td>
+                        <span
+                          className={`client-status-badge client-status-badge--${client.status.toLowerCase()}`}
+                        >
+                          {
+                            CLIENT_STATUS_LABEL[
+                              client.status
+                            ]
+                          }
+                        </span>
+                      </td>
+
+                      <td className="clients-project-count">
+                        {client.projectCount}
+                      </td>
+
+                      <td>
+                        {client.projectAddress ??
+                          'Sin dirección'}
+                      </td>
+
+                      <td>
+                        {formatDate(
+                          client.updatedAt
+                        )}
+                      </td>
+
+                      <td>
+                        <Link
+                          className="clients-detail-link"
+                          to={`/clients/${client.id}`}
+                        >
+                          Ver detalle
+                        </Link>
+                      </td>
+                    </tr>
+                  )
+                )}
+              </tbody>
+            </table>
+          </div>
+        ) : null}
+      </div>
     </section>
   );
 }
